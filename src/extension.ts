@@ -29,7 +29,6 @@ function updateSchema(context: vscode.ExtensionContext) {
         files.forEach((file, index) => {
             const filePath = path.resolve(dir, file)
             const ext = path.extname(file);
-            let hasDir;
             if (ext.match(new RegExp(filter))) {
                 fileCount++
                 fs.readFile(filePath, 'utf-8', (err, contents) => {

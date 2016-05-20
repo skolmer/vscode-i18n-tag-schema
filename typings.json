@@ -1,0 +1,5 @@
+{
+  "ambientDependencies": {
+    "escape-string-regexp": "registry:dt/escape-string-regexp#0.0.0+20160316155526"
+  }
+}

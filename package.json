@@ -1,0 +1,50 @@
+{
+  "name": "vscode-18n-tag-schema",
+  "displayName": "i18n tagged template json generator",
+  "description": "Run command \"i18nTag: Update translation schema\" to generate a new translation schema.",
+  "version": "0.0.3",
+  "publisher": "skolmer",
+  "author": "Steffen Kolmer <steffen@kolmer.net> (http://github.com/skolmer)",
+  "engines": {
+    "vscode": "^1.1.1"
+  },
+  "icon": "images/vscode-18n-tag-schema-icon.png",
+  "categories": [
+    "Other"
+  ],
+  "galleryBanner": {
+    "color": "#f2e058",
+    "theme": "light"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skolmer/vscode-18n-tag-schema.git"
+  },
+  "activationEvents": [
+    "onCommand:extension.updateSchema"
+  ],
+  "main": "./out/src/extension",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.updateSchema",
+        "title": "i18nTag: Update translation schema"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "dependencies": {
+    "acorn-jsx": "^3.0.1",
+    "acorn-jsx-walk": "^1.0.1",
+    "escape-string-regexp": "^1.0.5"
+  },
+  "devDependencies": {
+    "typescript": "^1.8.10",
+    "typings": "^0.8.1",
+    "vscode": "^0.11.13"
+  }
+}

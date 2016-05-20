@@ -18,6 +18,6 @@ This extension genarates a json schema based on i18n tagged template strings in 
             "url": "./translation.schema.json"
         },
         ..
-   }
+    ]
 ```
    

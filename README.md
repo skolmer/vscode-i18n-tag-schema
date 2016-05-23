@@ -1,9 +1,8 @@
-# vscode-18n-tag-schema
+# vscode-i18n-tag-schema
 ![](images/vscode-18n-tag-schema-icon-big.jpg)
 
-* Inspired by [i18n with tagged template strings in ECMAScript 6](http://jaysoo.ca/2014/03/20/i18n-with-es6-template-strings/)
-
 This extension genarates a json schema based on i18n tagged template strings in your javascript project
+[[read more]](https://github.com/skolmer/es2015-i18n-tag)
 
 ###.vscode/settings.json
 ```json

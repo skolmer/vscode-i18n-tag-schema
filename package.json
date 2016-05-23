@@ -1,5 +1,5 @@
 {
-  "name": "vscode-18n-tag-schema",
+  "name": "vscode-i18n-tag-schema",
   "displayName": "Generates a json schema for all i18n tagged template literals in your project",
   "description": "Run command \"i18nTag: Update translation schema\" to generate a new translation schema.",
   "version": "0.0.3",

@@ -5,6 +5,7 @@
   "version": "0.0.3",
   "publisher": "skolmer",
   "author": "Steffen Kolmer <steffen@kolmer.net> (http://github.com/skolmer)",
+  "license": "MIT",
   "engines": {
     "vscode": "^1.1.1"
   },

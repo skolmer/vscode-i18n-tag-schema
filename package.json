@@ -7,7 +7,7 @@
   "author": "Steffen Kolmer <steffen@kolmer.net> (http://github.com/skolmer)",
   "license": "MIT",
   "engines": {
-    "vscode": "^1.1.1"
+    "vscode": "^0.10.5"
   },
   "icon": "images/vscode-18n-tag-schema-icon.jpg",
   "categories": [
@@ -22,13 +22,13 @@
     "url": "https://github.com/skolmer/vscode-18n-tag-schema.git"
   },
   "activationEvents": [
-    "onCommand:extension.updateSchema"
+    "onCommand:i18nTag.updateSchema"
   ],
   "main": "./out/src/extension",
   "contributes": {
     "commands": [
       {
-        "command": "extension.updateSchema",
+        "command": "i18nTag.updateSchema",
         "title": "i18nTag: Update translation schema"
       }
     ]

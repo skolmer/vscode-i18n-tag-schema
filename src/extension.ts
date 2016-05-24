@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag');
     context.subscriptions.push(outputChannel);
 
-    var updateSchemaCommand = vscode.commands.registerCommand('extension.updateSchema', (context) => {
+    var updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
         updateSchema(context);
     });
     context.subscriptions.push(updateSchemaCommand);

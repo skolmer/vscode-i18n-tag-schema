@@ -3,13 +3,13 @@
 		"module": "commonjs",
 		"target": "es5",
 		"outDir": "out",
-		"noLib": true,
 		"sourceMap": true,
         "rootDir": ".",
-        "watch": false
+        "watch": false		
 	},
 	"exclude": [
 		"node_modules",
-		"typings"
+		"typings",
+		"test"
 	]
 }

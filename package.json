@@ -9,7 +9,7 @@
   "engines": {
     "vscode": "^1.1.1"
   },
-  "icon": "images/vscode-18n-tag-schema-icon.png",
+  "icon": "images/vscode-18n-tag-schema-icon.jpg",
   "categories": [
     "Other"
   ],
@@ -39,8 +39,8 @@
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
   "devDependencies": {
-    "i18n-tag-schema": "^0.1.0",
-    "typescript": "^1.8.10",
+    "i18n-tag-schema": "^0.3.0",
+    "typescript": "^1.7.5",
     "typings": "^0.8.1",
     "vscode": "^0.11.13"
   }

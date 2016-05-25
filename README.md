@@ -1,5 +1,5 @@
 # vscode-i18n-tag-schema
-![](images/vscode-18n-tag-schema-icon-big.jpg)
+[![](images/vscode-18n-tag-schema-icon-big.jpg)](https://github.com/skolmer/es2015-i18n-tag)
 
 This [extension](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) genarates a json schema based on [i18n tagged template literals](https://github.com/skolmer/es2015-i18n-tag) in your javascript project
 

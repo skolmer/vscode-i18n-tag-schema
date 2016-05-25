@@ -24,7 +24,7 @@ For more details please see: https://github.com/skolmer/es2015-i18n-tag
 ### Use
 Run command `i18nTag: Update translation schema` to generate a new translation schema.
 
-### Reference schema in translation.json file
+### Reference schema in individual JSON file
 ```json
 {
     "$schema": "./translation.schema.json",

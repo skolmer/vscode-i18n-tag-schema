@@ -5,7 +5,7 @@ This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?i
 
 For more details please see: https://github.com/skolmer/es2015-i18n-tag
 
-###.vscode/settings.json
+##.vscode/settings.json
 For quick configuration use `i18nTag: Configure translation schema generator` command
 
 ```json
@@ -23,12 +23,12 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
     ]
 ```
    
-### Use
+## Use
 * Run command `i18nTag: Update translation schema` to generate a new translation schema.
 * Run command `i18nTag: Show translation schema` to show the current translation schema.
 * Run command `i18nTag: Show last local change to translation schema` to show the last local change of translation schema.
 
-### Reference schema in individual JSON file
+## Reference schema in individual JSON file
 If you don't set the translation directory in configuration you can reference the schema directly in your json file.
 ```json
 {
@@ -37,7 +37,7 @@ If you don't set the translation directory in configuration you can reference th
 }
 ```
 
-### Related
+## Related
 * [es2015-i18n-tag](https://github.com/skolmer/es2015-i18n-tag)
 * [i18n-tag-schema](https://github.com/skolmer/i18n-tag-schema)
 * [babel-plugin-i18n-tag-translate](https://github.com/skolmer/babel-plugin-i18n-tag-translate)

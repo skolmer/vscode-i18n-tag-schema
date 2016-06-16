@@ -29,18 +29,27 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function updateSchema(context: vscode.ExtensionContext) {   
-    const callback = (message: string) => {
-        if(message.indexOf('i18n json schema has been updated') > -1) {
-            var items = (oldSchema) ? ["Show Diff"] : []
-            vscode.window.showInformationMessage(message, ...items).then((value) => {
-                if(value === "Show Diff") {
-                    vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(schema), vscode.Uri.parse('i18n-schema:old.json')) 
+    const callback = (message: string, type: string) => {
+        switch (type) {
+            case 'success':
+                if(message.indexOf('i18n json schema has been updated') > -1) {
+                    var items = (oldSchema) ? ["Show Diff"] : []
+                    vscode.window.showInformationMessage(message, ...items).then((value) => {
+                        if(value === "Show Diff") {
+                            vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(schema), vscode.Uri.parse('i18n-schema:old.json')) 
+                        }
+                    })
+                } else {
+                    vscode.window.showInformationMessage(message)
                 }
-            })
-        } else if(message.indexOf('No i18n tagged template literals found') > -1) {
-            vscode.window.showWarningMessage(message)
-        } else {
-            outputChannel.appendLine(message)
+                break
+            case 'error':
+                vscode.window.showErrorMessage(message)
+                break
+            default:
+                outputChannel.appendLine(message)
+                outputChannel.show(true)
+                break
         }
     }
     vscode.workspace.openTextDocument(schema).then((file) => {        

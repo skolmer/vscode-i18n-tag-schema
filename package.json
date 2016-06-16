@@ -22,14 +22,27 @@
     "url": "https://github.com/skolmer/vscode-18n-tag-schema.git"
   },
   "activationEvents": [
-    "onCommand:i18nTag.updateSchema"
+    "onCommand:i18nTag.updateSchema",
+    "onCommand:i18nTag.showTranslationSchema",
+    "onCommand:i18nTag.showTranslationSchemaChanges"
   ],
   "main": "./out/src/extension",
   "contributes": {
     "commands": [
       {
         "command": "i18nTag.updateSchema",
-        "title": "i18nTag: Update translation schema"
+        "category": "i18nTag",
+        "title": "Update translation schema"
+      },
+      {
+        "command": "i18nTag.showTranslationSchema",
+        "category": "i18nTag",
+        "title": "Show translation schema"
+      },
+      {
+        "command": "i18nTag.showTranslationSchemaChanges",
+        "category": "i18nTag",
+        "title": "Show last local change to translation schema "
       }
     ]
   },

@@ -27,6 +27,22 @@ export function activate(context: vscode.ExtensionContext) {
         updateSchema(context)
     })
 
+    var showTranslationSchema = vscode.commands.registerCommand('i18nTag.showTranslationSchema', (context) => {
+        vscode.workspace.openTextDocument(schema).then((file) => { 
+            vscode.window.showTextDocument(file)
+        }, (reason) => {
+            vscode.window.showErrorMessage(reason)
+        });
+    })
+
+    var showTranslationSchemaChanges = vscode.commands.registerCommand('i18nTag.showTranslationSchemaChanges', (context) => {
+        if(oldSchema) {
+            vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
+        } else {
+            vscode.window.showInformationMessage(`Schema has no local changes`)
+        }
+    })    
+
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
         provideTextDocumentContent(uri) {
             switch(uri.path) {
@@ -44,7 +60,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     })
 
-    context.subscriptions.push(updateSchemaCommand, registration)
+    context.subscriptions.push(updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration)
 }
 
 function spin(start) {

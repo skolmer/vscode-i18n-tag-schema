@@ -31,8 +31,9 @@ export function activate(context: vscode.ExtensionContext) {
                 placeHolder: 'e.g. ./src',
                 value: './src',
                 validateInput: (val) =>  {
-                        if(!!val) return 'Source directory setting is required!'
+                        if(!val) return 'Source directory setting is required!'
                         if(!fs.existsSync(path.resolve(vscode.workspace.rootPath, val))) return 'Source directory cannot be found!'
+                        return null
                     } 
             }).then((srcProperty) => {
                 if(!srcProperty) {
@@ -44,8 +45,9 @@ export function activate(context: vscode.ExtensionContext) {
                     placeHolder: 'e.g. ./translation.schema.json',
                     value: './translation.schema.json',
                     validateInput: (val) =>  {
-                        if(!!val) return 'Schema path setting is required!'
+                        if(!val) return 'Schema path setting is required!'
                         if(!fs.existsSync(path.dirname(path.resolve(vscode.workspace.rootPath, val)))) return 'Schema path cannot be found!'
+                        return null
                     } 
                 }).then((schemaProperty) => {
                     if(!schemaProperty) {

@@ -112,7 +112,6 @@ function updateSchema(context: vscode.ExtensionContext) {
                 break
             case 'trace':
                 trace = message
-                break
             default:
                 outputChannel.appendLine(message)
                 outputChannel.show(true)

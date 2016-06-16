@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import i18nTagSchema from 'i18n-tag-schema'
 
+let outputChannel: vscode.OutputChannel
 let oldSchema: string
 let config = vscode.workspace.getConfiguration('i18nTag')
 const filter = config['filter'] || '\\.jsx?'
@@ -11,6 +12,9 @@ const srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
 const schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
 
 export function activate(context: vscode.ExtensionContext) {
+    outputChannel = vscode.window.createOutputChannel('i18nTag')
+    context.subscriptions.push(outputChannel)
+
     var updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
         updateSchema(context)
     })
@@ -26,13 +30,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 function updateSchema(context: vscode.ExtensionContext) {   
     const callback = (message: string) => {
-        var items = (oldSchema) ? ["Show Diff"] : []
-        vscode.window.showInformationMessage(message, ...items).then((value) => {
-            if(value === "Show Diff") {
-                vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(schema), vscode.Uri.parse('i18n-schema:old.schema.json')) 
-            }
-        })
-        
+        if(message.indexOf('i18n json schema has been updated') > -1) {
+            var items = (oldSchema) ? ["Show Diff"] : []
+            vscode.window.showInformationMessage(message, ...items).then((value) => {
+                if(value === "Show Diff") {
+                    vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(schema), vscode.Uri.parse('i18n-schema:old.json')) 
+                }
+            })
+        } else if(message.indexOf('No i18n tagged template literals found') > -1) {
+            vscode.window.showWarningMessage(message)
+        } else {
+            outputChannel.appendLine(message)
+        }
     }
     vscode.workspace.openTextDocument(schema).then((file) => {        
         oldSchema = file.getText()

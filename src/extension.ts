@@ -11,9 +11,9 @@ const filter = config['filter'] || '\\.jsx?'
 const srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
 const schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
 const spinner = ['🌍 ',	'🌎 ', '🌏 ']
-const spinnerInterval = 80
+const spinnerInterval = 180
 const spinnerLength = spinner.length
-const spinnerMessage = 'Generating i18n schema...'
+const spinnerMessage = 'Generating i18n translation schema...'
 let spinnerIndex = 0
 let showSpinner = false
 let spinnerInstance: vscode.StatusBarItem

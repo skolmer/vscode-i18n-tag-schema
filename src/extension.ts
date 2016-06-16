@@ -10,6 +10,13 @@ let config = vscode.workspace.getConfiguration('i18nTag')
 const filter = config['filter'] || '\\.jsx?'
 const srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
 const schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
+const spinner = ['🌍 ',	'🌎 ', '🌏 ']
+const spinnerInterval = 80
+const spinnerLength = spinner.length
+const spinnerMessage = 'Generating i18n schema...'
+let spinnerIndex = 0
+let showSpinner = false
+let spinnerInstance: vscode.StatusBarItem
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
@@ -39,20 +46,47 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(updateSchemaCommand, registration)
 }
 
+function spin(start) {
+    showSpinner = start
+    if(!showSpinner && spinnerInstance) {        
+        spinnerInstance.dispose()
+        spinnerInstance = undefined
+    }
+    if(showSpinner) {
+        let char = spinner[spinnerIndex]      
+        if(!spinnerInstance) {
+            spinnerInstance = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, Number.MIN_VALUE)
+            spinnerInstance.show()
+        } 
+        spinnerInstance.text = `${char} ${spinnerMessage}`
+        
+        if(spinnerIndex < spinnerLength-1) {
+            spinnerIndex++
+        } else {
+            spinnerIndex = 0
+        }   
+        setTimeout(() => {
+            spin(showSpinner)
+        }, spinnerInterval);
+    }
+}
+
 function updateSchema(context: vscode.ExtensionContext) {   
+    spin(true)
     const callback = (message: string, type: string = 'success') => {
         switch (type) {
             case 'success':
+                spin(false)
                 if(message.indexOf('i18nTag json schema has been updated') > -1) {
-                    var items = (oldSchema) ? ["Show Diff"] : []
+                    var items = (oldSchema) ? ['Show Diff'] : []
                     vscode.window.showInformationMessage(message, ...items).then((value) => {
-                        if(value === "Show Diff") {
+                        if(value === 'Show Diff') {
                             vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
                         }
                     })
                 } else {
-                    vscode.window.showInformationMessage(message, "Show File").then((value) => {
-                        if(value === "Show File") {
+                    vscode.window.showInformationMessage(message, 'Show File').then((value) => {
+                        if(value === 'Show File') {
                             vscode.workspace.openTextDocument(schema).then((file) => { 
                                 vscode.window.showTextDocument(file)
                             }, (reason) => {
@@ -66,6 +100,7 @@ function updateSchema(context: vscode.ExtensionContext) {
                 vscode.window.showWarningMessage(message)
                 break
             case 'error':
+                spin(false)
                 vscode.window.showErrorMessage(message)
                 break
             default:

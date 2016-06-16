@@ -51,8 +51,19 @@ function updateSchema(context: vscode.ExtensionContext) {
                         }
                     })
                 } else {
-                    vscode.window.showInformationMessage(message)
+                    vscode.window.showInformationMessage(message, "Show File").then((value) => {
+                        if(value === "Show File") {
+                            vscode.workspace.openTextDocument(schema).then((file) => { 
+                                vscode.window.showTextDocument(file)
+                            }, (reason) => {
+                                vscode.window.showErrorMessage(reason)
+                            });
+                        }
+                    })
                 }
+                break
+            case 'warn':
+                vscode.window.showWarningMessage(message)
                 break
             case 'error':
                 vscode.window.showErrorMessage(message)

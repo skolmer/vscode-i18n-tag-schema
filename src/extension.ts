@@ -30,7 +30,10 @@ export function activate(context: vscode.ExtensionContext) {
                 prompt: 'What is the source directory of your JS application?', 
                 placeHolder: 'e.g. ./src',
                 value: './src',
-                validateInput: (val) => (!!val)?null:'Source directory setting is required!'
+                validateInput: (val) =>  {
+                        if(!!val) return 'Source directory setting is required!'
+                        if(!fs.existsSync(path.resolve(vscode.workspace.rootPath, val))) return 'Source directory cannot be found!'
+                    } 
             }).then((srcProperty) => {
                 if(!srcProperty) {
                     reject()
@@ -40,7 +43,10 @@ export function activate(context: vscode.ExtensionContext) {
                     prompt: 'What should be the name of your translation schema?', 
                     placeHolder: 'e.g. ./translation.schema.json',
                     value: './translation.schema.json',
-                    validateInput: (val) => (!!val)?null:'Schema path setting is required!'
+                    validateInput: (val) =>  {
+                        if(!!val) return 'Schema path setting is required!'
+                        if(!fs.existsSync(path.dirname(path.resolve(vscode.workspace.rootPath, val)))) return 'Schema path cannot be found!'
+                    } 
                 }).then((schemaProperty) => {
                     if(!schemaProperty) {
                         reject()
@@ -149,10 +155,6 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
     const settingsPath = path.resolve(vscode.workspace.rootPath, './.vscode/settings.json')
 
     fs.readFile(settingsPath, 'utf-8', (err, contents) => {
-        if(err) {
-            reject(err.message)
-            return
-        }
         let settings = (contents)?JSON.parse(contents.replace(/\/\/[^\r\n\{\}]*/g, '')):{}
         settings['i18nTag.src'] = src
         settings['i18nTag.schema'] = schm
@@ -168,6 +170,14 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
             })            
         }
         settings['json.schemas'] = schemas
+        if(!fs.existsSync(path.dirname(settingsPath))) {
+            try {
+                fs.mkdir(path.dirname(settingsPath))
+            } catch(err) {
+                reject(err.message)
+                return
+            }
+        }
         fs.writeFile(settingsPath, JSON.stringify(settings, null, '\t'), 'utf-8', (err) => {            
             if (err) {
                 vscode.window.showInformationMessage(`Configuration of translation schema generator failed. ${err.message}`)

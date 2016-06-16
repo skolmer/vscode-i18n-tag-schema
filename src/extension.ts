@@ -11,7 +11,8 @@ const schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './tr
 const spinner = ['🌍 ',	'🌎 ', '🌏 ']
 const spinnerInterval = 180
 const spinnerLength = spinner.length
-const spinnerMessage = 'Generating i18n translation schema...'
+const spinnerMessage = 'Generating i18n translation schema'
+let trace = ''
 let spinnerInstance: vscode.StatusBarItem
 let spinnerIndex = 0
 let showSpinner = false
@@ -59,7 +60,11 @@ function spin(start) {
             spinnerInstance = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, Number.MIN_SAFE_INTEGER)
             spinnerInstance.show()
         } 
-        spinnerInstance.text = `${char} ${spinnerMessage}`
+        if(trace) {
+            spinnerInstance.text = `${char} ${spinnerMessage}: ${trace}`
+        } else {
+            spinnerInstance.text = `${char} ${spinnerMessage}...`
+        }
         
         if(spinnerIndex < spinnerLength-1) {
             spinnerIndex++
@@ -75,6 +80,7 @@ function spin(start) {
 function updateSchema(context: vscode.ExtensionContext) {   
     spin(true)
     const callback = (message: string, type: string = 'success') => {
+        trace = ''
         switch (type) {
             case 'success':
                 spin(false)
@@ -103,6 +109,9 @@ function updateSchema(context: vscode.ExtensionContext) {
             case 'error':
                 spin(false)
                 vscode.window.showErrorMessage(message)
+                break
+            case 'trace':
+                trace = message
                 break
             default:
                 outputChannel.appendLine(message)

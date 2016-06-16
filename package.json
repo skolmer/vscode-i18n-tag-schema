@@ -7,7 +7,7 @@
   "author": "Steffen Kolmer <steffen@kolmer.net> (http://github.com/skolmer)",
   "license": "MIT",
   "engines": {
-    "vscode": "^0.10.5"
+    "vscode": "^0.10.7"
   },
   "icon": "images/vscode-18n-tag-schema-icon.jpg",
   "categories": [
@@ -43,7 +43,7 @@
   },
   "devDependencies": {
     "typescript": "^1.7.5",
-    "typings": "^0.8.1",
-    "vscode": "^0.11.13"
+    "typings": "^1.2.0",
+    "vscode": "^0.11.0"
   }
 }

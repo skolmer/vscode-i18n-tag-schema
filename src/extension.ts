@@ -58,7 +58,15 @@ export function activate(context: vscode.ExtensionContext) {
                         prompt: 'Only files that match this RegExp will be scanned!', 
                         placeHolder: 'e.g. \\.jsx?',
                         value: '\\.jsx?',
-                        validateInput: (val) => (!!val)?null:'Extension RegEx setting is required!'
+                        validateInput: (val) =>  {
+                        if(!val) return 'File extension RegExp setting is required!'
+                        try {
+                            new RegExp(val);
+                        } catch(e) {
+                            return 'Invalid RegExp!'
+                        }
+                        return null
+                    } 
                     }).then((filterProperty) => {
                         if(!filterProperty) {
                             reject()

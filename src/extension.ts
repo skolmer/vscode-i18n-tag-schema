@@ -32,12 +32,11 @@ export function activate(context: vscode.ExtensionContext) {
                 value: './src',
                 validateInput: (val) =>  {
                         if(!val) return 'Source directory setting is required!'
-                        if(!fs.existsSync(path.resolve(vscode.workspace.rootPath, val))) return 'Source directory cannot be found!'
                         return null
                     } 
             }).then((srcProperty) => {
-                if(!srcProperty) {
-                    reject()
+                if(!srcProperty || !fs.existsSync(path.resolve(vscode.workspace.rootPath, srcProperty))) {
+                    reject('Source directory cannot be found!')
                     return
                 }
                 vscode.window.showInputBox({
@@ -46,12 +45,11 @@ export function activate(context: vscode.ExtensionContext) {
                     value: './translation.schema.json',
                     validateInput: (val) =>  {
                         if(!val) return 'Schema path setting is required!'
-                        if(!fs.existsSync(path.dirname(path.resolve(vscode.workspace.rootPath, val)))) return 'Schema path cannot be found!'
                         return null
                     } 
                 }).then((schemaProperty) => {
-                    if(!schemaProperty) {
-                        reject()
+                    if(!schemaProperty || !fs.existsSync(path.dirname(path.resolve(vscode.workspace.rootPath, schemaProperty)))) {
+                        reject('Schema path cannot be found!')
                         return
                     }
                     vscode.window.showInputBox({
@@ -59,18 +57,19 @@ export function activate(context: vscode.ExtensionContext) {
                         placeHolder: 'e.g. \\.jsx?',
                         value: '\\.jsx?',
                         validateInput: (val) =>  {
-                        if(!val) return 'File extension RegExp setting is required!'
-                        try {
-                            new RegExp(val);
-                        } catch(e) {
-                            return 'Invalid RegExp!'
-                        }
+                        if(!val) return 'File extension RegExp setting is required!'                        
                         return null
                     } 
                     }).then((filterProperty) => {
                         if(!filterProperty) {
-                            reject()
+                            reject('Filter setting is required!')
                             return
+                        }
+                        try {
+                            new RegExp(filterProperty);
+                        } catch(e) {
+                            reject('Invalid RegExp!')
+                            return 
                         }
                         vscode.window.showInputBox({
                             prompt: 'Optional: Where are your translation files located?', 

@@ -24,11 +24,17 @@
   "activationEvents": [
     "onCommand:i18nTag.updateSchema",
     "onCommand:i18nTag.showTranslationSchema",
-    "onCommand:i18nTag.showTranslationSchemaChanges"
+    "onCommand:i18nTag.showTranslationSchemaChanges",
+    "onCommand:i18nTag.configureSchemaGenerator"
   ],
   "main": "./out/src/extension",
   "contributes": {
     "commands": [
+      {
+        "command": "i18nTag.configureSchemaGenerator",
+        "category": "i18nTag",
+        "title": "Configure translation schema generator"
+      },
       {
         "command": "i18nTag.updateSchema",
         "category": "i18nTag",
@@ -42,8 +48,8 @@
       {
         "command": "i18nTag.showTranslationSchemaChanges",
         "category": "i18nTag",
-        "title": "Show last local change to translation schema "
-      }
+        "title": "Show last local change to translation schema"
+      }      
     ]
   },
   "scripts": {

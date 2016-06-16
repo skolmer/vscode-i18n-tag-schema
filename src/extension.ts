@@ -1,17 +1,18 @@
 "use strict";
 
 import * as vscode from 'vscode';
+import * as fs from "fs"
 import * as path from 'path';
 import i18nTagSchema from 'i18n-tag-schema'
 
-const config = vscode.workspace.getConfiguration('i18nTag')
-const filter = config['filter'] || '\\.jsx?'
-const srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
-const schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
 const spinner = ['🌍 ',	'🌎 ', '🌏 ']
-const spinnerInterval = 180
+const spinnerInterval = 500
 const spinnerLength = spinner.length
 const spinnerMessage = 'Generating i18n translation schema'
+let config = vscode.workspace.getConfiguration('i18nTag')
+let filter = config['filter'] || '\\.jsx?'
+let srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
+let schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
 let info = ''
 let spinnerInstance: vscode.StatusBarItem
 let spinnerIndex = 0
@@ -22,6 +23,36 @@ let oldSchema: string
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
     context.subscriptions.push(outputChannel)
+
+    var configureSchemaGenerator = vscode.commands.registerCommand('i18nTag.configureSchemaGenerator', (context) => {        
+        vscode.window.showInputBox({
+            prompt: 'What is the source directory of your JS application?', 
+            placeHolder: 'e.g. ./src',
+            value: './src',
+            validateInput: (val) => (!!val)?null:'Source directory setting is required!'
+        }).then((srcProperty) => {
+            vscode.window.showInputBox({
+                prompt: 'What should be the name of your translation schema?', 
+                placeHolder: 'e.g. ./translation.schema.json',
+                value: './translation.schema.json',
+            validateInput: (val) => (!!val)?null:'Schema path setting is required!'
+            }).then((schemaProperty) => {
+                vscode.window.showInputBox({
+                    prompt: 'Only files that match this RegExp will be scanned!', 
+                    placeHolder: 'e.g. \\.jsx?',
+                    value: '\\.jsx?',
+                    validateInput: (val) => (!!val)?null:'Extension RegEx setting is required!'
+                }).then((filterProperty) => {
+                    vscode.window.showInputBox({
+                        prompt: 'Optional: Where are your translation files located?', 
+                        placeHolder: 'e.g. /translations/**/*.json'
+                    }).then((translationsProperty) => {
+                        updateSettings(srcProperty, schemaProperty, filterProperty, translationsProperty)
+                    })
+                })
+            })
+        })
+    })
 
     var updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
         updateSchema(context)
@@ -60,7 +91,44 @@ export function activate(context: vscode.ExtensionContext) {
         }
     })
 
-    context.subscriptions.push(updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration)
+    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration)
+}
+
+function updateSettings(src: string, schm: string, filt: string, translations?: string) {    
+    const settingsPath = path.resolve(vscode.workspace.rootPath, './.vscode/settings.json')
+
+    fs.readFile(settingsPath, 'utf-8', (err, contents) => {
+        if(err) {
+            return;
+        }
+        let settings = (contents)?JSON.parse(contents.replace(/\/\/[^\r\n\{\}]*/g, '')):{}
+        settings['i18nTag.src'] = src
+        settings['i18nTag.schema'] = schm
+        settings['i18nTag.filter'] = filt
+        let schemas = settings['json.schemas'] || []
+        schemas = schemas.filter((val) => ( !val.url || val.url != schm ))
+        if(translations) {            
+            schemas.push({
+                "fileMatch": [
+                    translations
+                ],
+                "url": schm
+            })            
+        }
+        settings['json.schemas'] = schemas
+        fs.writeFile(settingsPath, JSON.stringify(settings, null, '\t'), 'utf-8', function (err) {
+            filter = filt
+	        srcPath = path.resolve(vscode.workspace.rootPath, src)
+	        schema = path.resolve(vscode.workspace.rootPath, schm)
+            if (err) {
+                vscode.window.showInformationMessage(`Configuration of translation schema generator failed. ${err}`)
+                return
+            }
+            vscode.window.showInformationMessage('Sucessfully configured translation schema generator')
+        })
+    });
+    
+    
 }
 
 function spin(start) {

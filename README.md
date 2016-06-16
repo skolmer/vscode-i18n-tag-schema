@@ -6,6 +6,8 @@ This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?i
 For more details please see: https://github.com/skolmer/es2015-i18n-tag
 
 ###.vscode/settings.json
+For quick configuration use `i18nTag: Configure translation schema generator` command
+
 ```json
     "i18nTag.src": "./src",
 	"i18nTag.schema": "./translation.schema.json",
@@ -22,7 +24,9 @@ For more details please see: https://github.com/skolmer/es2015-i18n-tag
 ```
    
 ### Use
-Run command `i18nTag: Update translation schema` to generate a new translation schema.
+* Run command `i18nTag: Update translation schema` to generate a new translation schema.
+* Run command `i18nTag: Show translation schema` to show the current translation schema.
+* Run command `i18nTag: Show last local change to translation schema` to show the last local change of translation schema.
 
 ### Reference schema in individual JSON file
 ```json

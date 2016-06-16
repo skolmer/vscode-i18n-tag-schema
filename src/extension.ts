@@ -21,7 +21,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
         provideTextDocumentContent(uri) {
-            return oldSchema
+            switch(uri.path) {
+                case 'old.json':
+                    return oldSchema
+                default:
+                    return new Promise((fulfill, reject) => {
+                        vscode.workspace.openTextDocument(schema).then((file) => {        
+                            fulfill(file.getText())
+                        }, (reason) => {
+                            reject(reason)
+                        });
+                    })
+            }
         }
     })
 
@@ -29,14 +40,14 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function updateSchema(context: vscode.ExtensionContext) {   
-    const callback = (message: string, type: string) => {
+    const callback = (message: string, type: string = 'success') => {
         switch (type) {
             case 'success':
-                if(message.indexOf('i18n json schema has been updated') > -1) {
+                if(message.indexOf('i18nTag json schema has been updated') > -1) {
                     var items = (oldSchema) ? ["Show Diff"] : []
                     vscode.window.showInformationMessage(message, ...items).then((value) => {
                         if(value === "Show Diff") {
-                            vscode.commands.executeCommand('vscode.diff', vscode.Uri.file(schema), vscode.Uri.parse('i18n-schema:old.json')) 
+                            vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
                         }
                     })
                 } else {

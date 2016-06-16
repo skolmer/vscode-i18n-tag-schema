@@ -13,6 +13,7 @@ let config
 let filter
 let srcPath
 let schema
+let grouped
 let info = ''
 let spinnerInstance: vscode.StatusBarItem
 let spinnerIndex = 0
@@ -75,7 +76,12 @@ export function activate(context: vscode.ExtensionContext) {
                             prompt: 'Optional: Where are your translation files located?', 
                             placeHolder: 'e.g. /translations/**/*.json'
                         }).then((translationsProperty) => {
-                            updateSettings(srcProperty, schemaProperty, filterProperty, resolve, reject, translationsProperty)
+                            let quickPicks = ['no', 'yes']
+                            vscode.window.showQuickPick(quickPicks, {
+                                placeHolder: 'Should translations be grouped by source filename?'
+                            }).then((groupedProperty) => {
+                                updateSettings(srcProperty, schemaProperty, filterProperty, resolve, reject, groupedProperty === quickPicks[1], translationsProperty)
+                            }, reject)
                         }, reject)
                     }, reject)
                 }, reject)
@@ -151,11 +157,12 @@ function readConfig() {
             vscode.commands.executeCommand('i18nTag.configureSchemaGenerator').then(resolve, reject)
             return
         }
+        grouped = config['grouped']
         resolve();
     })
 }
 
-function updateSettings(src: string, schm: string, filt: string, resolve: () => void, reject: (reason: string) => void, translations?: string) {    
+function updateSettings(src: string, schm: string, filt: string, resolve: () => void, reject: (reason: string) => void, group: boolean, translations?: string) {    
     if(!src || !schm || !filt) {
         reject('Missing required settings')
         return
@@ -168,6 +175,7 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
         settings['i18nTag.src'] = src
         settings['i18nTag.schema'] = schm
         settings['i18nTag.filter'] = filt
+        settings['i18nTag.grouped'] = group
         let schemas = settings['json.schemas'] || []
         schemas = schemas.filter((val) => ( !val.url || val.url != schm ))
         if(translations) {            
@@ -196,6 +204,7 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
             filter = filt
 	        srcPath = path.resolve(vscode.workspace.rootPath, src)
 	        schema = path.resolve(vscode.workspace.rootPath, schm)
+            grouped = group
             vscode.window.showInformationMessage('Sucessfully configured translation schema generator').then(resolve, reject)
         })
     });
@@ -279,10 +288,10 @@ function updateSchema(context: vscode.ExtensionContext) {
     }
     vscode.workspace.openTextDocument(schema).then((file) => {        
         oldSchema = file.getText()
-        i18nTagSchema(srcPath, filter, schema, callback)
+        i18nTagSchema(srcPath, filter, schema, grouped, callback)
     }, (reason) => {
         oldSchema = null
-        i18nTagSchema(srcPath, filter, schema, callback)
+        i18nTagSchema(srcPath, filter, schema, grouped, callback)
     });
 }
 

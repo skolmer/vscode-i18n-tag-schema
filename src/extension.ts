@@ -164,7 +164,7 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
     const settingsPath = path.resolve(vscode.workspace.rootPath, './.vscode/settings.json')
 
     fs.readFile(settingsPath, 'utf-8', (err, contents) => {
-        let settings = (contents)?JSON.parse(contents.replace(/\/\/[^\r\n\{\}]*/g, '')):{}
+        let settings = (contents)?JSON.parse(contents.replace(/\/\/[^\r\n\{\}]*/g, '').replace(/\/\*[^\/]*\*\//g, '')):{}
         settings['i18nTag.src'] = src
         settings['i18nTag.schema'] = schm
         settings['i18nTag.filter'] = filt

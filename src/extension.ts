@@ -4,9 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import i18nTagSchema from 'i18n-tag-schema'
 
-let outputChannel: vscode.OutputChannel
-let oldSchema: string
-let config = vscode.workspace.getConfiguration('i18nTag')
+const config = vscode.workspace.getConfiguration('i18nTag')
 const filter = config['filter'] || '\\.jsx?'
 const srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
 const schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
@@ -14,9 +12,11 @@ const spinner = ['🌍 ',	'🌎 ', '🌏 ']
 const spinnerInterval = 180
 const spinnerLength = spinner.length
 const spinnerMessage = 'Generating i18n translation schema...'
+let spinnerInstance: vscode.StatusBarItem
 let spinnerIndex = 0
 let showSpinner = false
-let spinnerInstance: vscode.StatusBarItem
+let outputChannel: vscode.OutputChannel
+let oldSchema: string
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
@@ -51,11 +51,12 @@ function spin(start) {
     if(!showSpinner && spinnerInstance) {        
         spinnerInstance.dispose()
         spinnerInstance = undefined
+        spinnerIndex = 0
     }
     if(showSpinner) {
         let char = spinner[spinnerIndex]      
         if(!spinnerInstance) {
-            spinnerInstance = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, Number.MIN_VALUE)
+            spinnerInstance = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, Number.MIN_SAFE_INTEGER)
             spinnerInstance.show()
         } 
         spinnerInstance.text = `${char} ${spinnerMessage}`

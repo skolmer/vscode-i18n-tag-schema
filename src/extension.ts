@@ -9,10 +9,10 @@ const spinner = ['🌍 ',	'🌎 ', '🌏 ']
 const spinnerInterval = 500
 const spinnerLength = spinner.length
 const spinnerMessage = 'Generating i18n translation schema'
-let config = vscode.workspace.getConfiguration('i18nTag')
-let filter = config['filter'] || '\\.jsx?'
-let srcPath = path.resolve(vscode.workspace.rootPath, config['src'] || '.')
-let schema = path.resolve(vscode.workspace.rootPath, config['schema'] || './translation.schema.json')
+let config
+let filter
+let srcPath
+let schema
 let info = ''
 let spinnerInstance: vscode.StatusBarItem
 let spinnerIndex = 0
@@ -24,54 +24,74 @@ export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
     context.subscriptions.push(outputChannel)
 
-    var configureSchemaGenerator = vscode.commands.registerCommand('i18nTag.configureSchemaGenerator', (context) => {        
-        vscode.window.showInputBox({
-            prompt: 'What is the source directory of your JS application?', 
-            placeHolder: 'e.g. ./src',
-            value: './src',
-            validateInput: (val) => (!!val)?null:'Source directory setting is required!'
-        }).then((srcProperty) => {
+    var configureSchemaGenerator = vscode.commands.registerCommand('i18nTag.configureSchemaGenerator', (context) => {     
+        return new Promise((resolve, reject) => {
             vscode.window.showInputBox({
-                prompt: 'What should be the name of your translation schema?', 
-                placeHolder: 'e.g. ./translation.schema.json',
-                value: './translation.schema.json',
-            validateInput: (val) => (!!val)?null:'Schema path setting is required!'
-            }).then((schemaProperty) => {
+                prompt: 'What is the source directory of your JS application?', 
+                placeHolder: 'e.g. ./src',
+                value: './src',
+                validateInput: (val) => (!!val)?null:'Source directory setting is required!'
+            }).then((srcProperty) => {
+                if(!srcProperty) {
+                    reject()
+                    return
+                }
                 vscode.window.showInputBox({
-                    prompt: 'Only files that match this RegExp will be scanned!', 
-                    placeHolder: 'e.g. \\.jsx?',
-                    value: '\\.jsx?',
-                    validateInput: (val) => (!!val)?null:'Extension RegEx setting is required!'
-                }).then((filterProperty) => {
+                    prompt: 'What should be the name of your translation schema?', 
+                    placeHolder: 'e.g. ./translation.schema.json',
+                    value: './translation.schema.json',
+                    validateInput: (val) => (!!val)?null:'Schema path setting is required!'
+                }).then((schemaProperty) => {
+                    if(!schemaProperty) {
+                        reject()
+                        return
+                    }
                     vscode.window.showInputBox({
-                        prompt: 'Optional: Where are your translation files located?', 
-                        placeHolder: 'e.g. /translations/**/*.json'
-                    }).then((translationsProperty) => {
-                        updateSettings(srcProperty, schemaProperty, filterProperty, translationsProperty)
-                    })
-                })
-            })
-        })
+                        prompt: 'Only files that match this RegExp will be scanned!', 
+                        placeHolder: 'e.g. \\.jsx?',
+                        value: '\\.jsx?',
+                        validateInput: (val) => (!!val)?null:'Extension RegEx setting is required!'
+                    }).then((filterProperty) => {
+                        if(!filterProperty) {
+                            reject()
+                            return
+                        }
+                        vscode.window.showInputBox({
+                            prompt: 'Optional: Where are your translation files located?', 
+                            placeHolder: 'e.g. /translations/**/*.json'
+                        }).then((translationsProperty) => {
+                            updateSettings(srcProperty, schemaProperty, filterProperty, resolve, reject, translationsProperty)
+                        }, reject)
+                    }, reject)
+                }, reject)
+            }, reject)
+        })          
     })
 
     var updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
-        updateSchema(context)
+        readConfig().then(() => {
+            updateSchema(context)
+        })        
     })
 
     var showTranslationSchema = vscode.commands.registerCommand('i18nTag.showTranslationSchema', (context) => {
-        vscode.workspace.openTextDocument(schema).then((file) => { 
-            vscode.window.showTextDocument(file)
-        }, (reason) => {
-            vscode.window.showErrorMessage(reason)
-        });
+        readConfig().then(() => {
+            vscode.workspace.openTextDocument(schema).then((file) => { 
+                vscode.window.showTextDocument(file)
+            }, (reason) => {
+                vscode.window.showErrorMessage(reason)
+            });
+        })        
     })
 
     var showTranslationSchemaChanges = vscode.commands.registerCommand('i18nTag.showTranslationSchemaChanges', (context) => {
-        if(oldSchema) {
-            vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
-        } else {
-            vscode.window.showInformationMessage(`Schema has no local changes`)
-        }
+        readConfig().then(() => {
+            if(oldSchema) {
+                vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
+            } else {
+                vscode.window.showInformationMessage(`Schema has no local changes`)
+            }
+        })        
     })    
 
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
@@ -80,9 +100,9 @@ export function activate(context: vscode.ExtensionContext) {
                 case 'old.json':
                     return oldSchema
                 default:
-                    return new Promise((fulfill, reject) => {
+                    return new Promise((resolve, reject) => {
                         vscode.workspace.openTextDocument(schema).then((file) => {        
-                            fulfill(file.getText())
+                            resolve(file.getText())
                         }, (reason) => {
                             reject(reason)
                         });
@@ -94,12 +114,44 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration)
 }
 
-function updateSettings(src: string, schm: string, filt: string, translations?: string) {    
+function readConfig() {
+    return new Promise((resolve, reject) => {
+        config = vscode.workspace.getConfiguration('i18nTag')
+        filter = config['filter']
+        if(!filter) {
+            vscode.commands.executeCommand('i18nTag.configureSchemaGenerator').then(resolve, reject)
+            return
+        }
+        srcPath = config['src']
+        if(srcPath) {
+            srcPath = path.resolve(vscode.workspace.rootPath, srcPath)            
+        } else {
+            vscode.commands.executeCommand('i18nTag.configureSchemaGenerator').then(resolve, reject)
+            return
+        }
+        schema = config['schema']
+        if(schema) {
+            schema = path.resolve(vscode.workspace.rootPath, schema)
+        } else {
+            vscode.commands.executeCommand('i18nTag.configureSchemaGenerator').then(resolve, reject)
+            return
+        }
+        resolve();
+    })
+}
+
+function updateSettings(src: string, schm: string, filt: string, resolve: () => void, reject: (reason: string) => void, translations?: string) {    
+    if(!src || !schm || !filt) {
+        reject('Missing required settings')
+        return
+    }
+    
     const settingsPath = path.resolve(vscode.workspace.rootPath, './.vscode/settings.json')
 
     fs.readFile(settingsPath, 'utf-8', (err, contents) => {
         if(err) {
-            return;
+            reject(err.message)
+            return
         }
         let settings = (contents)?JSON.parse(contents.replace(/\/\/[^\r\n\{\}]*/g, '')):{}
         settings['i18nTag.src'] = src
@@ -116,15 +168,16 @@ function updateSettings(src: string, schm: string, filt: string, translations?: 
             })            
         }
         settings['json.schemas'] = schemas
-        fs.writeFile(settingsPath, JSON.stringify(settings, null, '\t'), 'utf-8', function (err) {
+        fs.writeFile(settingsPath, JSON.stringify(settings, null, '\t'), 'utf-8', (err) => {            
+            if (err) {
+                vscode.window.showInformationMessage(`Configuration of translation schema generator failed. ${err.message}`)
+                reject(err.message)
+                return
+            }
             filter = filt
 	        srcPath = path.resolve(vscode.workspace.rootPath, src)
 	        schema = path.resolve(vscode.workspace.rootPath, schm)
-            if (err) {
-                vscode.window.showInformationMessage(`Configuration of translation schema generator failed. ${err}`)
-                return
-            }
-            vscode.window.showInformationMessage('Sucessfully configured translation schema generator')
+            vscode.window.showInformationMessage('Sucessfully configured translation schema generator').then(resolve, reject)
         })
     });
     

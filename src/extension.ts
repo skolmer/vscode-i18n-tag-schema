@@ -6,7 +6,7 @@ import * as path from 'path';
 import i18nTagSchema from 'i18n-tag-schema'
 
 const spinner = ['🌍 ',	'🌎 ', '🌏 ']
-const spinnerInterval = 500
+const spinnerInterval = 180
 const spinnerLength = spinner.length
 const spinnerMessage = 'Generating i18n translation schema'
 let config

@@ -259,7 +259,7 @@ function updateSchema(context: vscode.ExtensionContext) {
         switch (type) {
             case 'success':
                 spin(false)
-                if(message.indexOf('i18nTag json schema has been updated') > -1) {
+                if(message.indexOf('i18n json schema has been updated') > -1) {
                     var items = (oldSchema) ? ['Show Diff'] : []
                     vscode.window.showInformationMessage(message, ...items).then((value) => {
                         if(value === 'Show Diff') {

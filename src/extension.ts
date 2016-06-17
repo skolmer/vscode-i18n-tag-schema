@@ -90,29 +90,38 @@ export function activate(context: vscode.ExtensionContext) {
     })
 
     var updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
-        readConfig().then(() => {
-            updateSchema(context)
-        })        
+        return new Promise((resolve, reject) => {
+            readConfig().then(() => {
+                updateSchema(context)
+                resolve();
+            }, reject)     
+        });   
     })
 
     var showTranslationSchema = vscode.commands.registerCommand('i18nTag.showTranslationSchema', (context) => {
-        readConfig().then(() => {
-            vscode.workspace.openTextDocument(schema).then((file) => { 
-                vscode.window.showTextDocument(file)
-            }, (reason) => {
-                vscode.window.showErrorMessage(reason)
-            });
-        })        
+        return new Promise((resolve, reject) => {
+            readConfig().then(() => {
+                vscode.workspace.openTextDocument(schema).then((file) => { 
+                    vscode.window.showTextDocument(file)
+                }, (reason) => {
+                    vscode.window.showErrorMessage(reason)
+                });
+                resolve();
+            }, reject)   
+        });     
     })
 
     var showTranslationSchemaChanges = vscode.commands.registerCommand('i18nTag.showTranslationSchemaChanges', (context) => {
-        readConfig().then(() => {
-            if(oldSchema) {
-                vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
-            } else {
-                vscode.window.showInformationMessage(`Schema has no local changes`)
-            }
-        })        
+        return new Promise((resolve, reject) => {
+            readConfig().then(() => {
+                if(oldSchema) {
+                    vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)) 
+                } else {
+                    vscode.window.showInformationMessage(`Schema has no local changes`)
+                }
+                resolve();
+            }, reject)    
+        });    
     })    
 
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {

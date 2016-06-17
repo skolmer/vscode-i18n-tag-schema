@@ -2,7 +2,7 @@
   "name": "vscode-i18n-tag-schema",
   "displayName": "i18n literals schema generator",
   "description": "JSON Schema for i18n tagged template literals",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "skolmer",
   "author": "Steffen Kolmer <steffen@kolmer.net> (http://github.com/skolmer)",
   "license": "MIT",
@@ -49,7 +49,7 @@
         "command": "i18nTag.showTranslationSchemaChanges",
         "category": "i18nTag",
         "title": "Show last local change to translation schema"
-      }      
+      }
     ]
   },
   "scripts": {

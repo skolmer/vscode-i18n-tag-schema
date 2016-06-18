@@ -5,6 +5,8 @@ This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?i
 
 For more details please see: https://github.com/skolmer/es2015-i18n-tag
 
+[![](images/demo.gif)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema)
+
 ##.vscode/settings.json
 For quick configuration use `i18nTag: Configure translation schema generator` command
 

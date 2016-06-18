@@ -1,11 +1,11 @@
 # vscode-i18n-tag-schema
-[![](images/vscode-18n-tag-schema-icon-big.jpg)](https://github.com/skolmer/es2015-i18n-tag)
+[![es2015-i18n-tag](images/vscode-18n-tag-schema-icon-big.jpg)](https://github.com/skolmer/es2015-i18n-tag)
 
 This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) genarates a json schema based on [i18n tagged template literals](https://github.com/skolmer/es2015-i18n-tag) in your javascript project
 
 For more details please see: https://github.com/skolmer/es2015-i18n-tag
 
-[![](images/demo.gif)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema)
+[![Extension Demo](images/demo.gif)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema)
 
 ##.vscode/settings.json
 For quick configuration use `i18nTag: Configure translation schema generator` command
@@ -21,8 +21,7 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
                 "/src/i18n/*.json"
             ],
             "url": "./translation.schema.json"
-        },
-        ..
+        }
     ]
 ```
    

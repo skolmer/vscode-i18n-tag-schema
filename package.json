@@ -8,7 +8,7 @@
     "email": "steffen@kolmer.net",
     "name": "Steffen Kolmer",
     "url": "http://kolmer.net"
-  }
+  },
   "license": "MIT",
   "homepage": "https://github.com/skolmer/es2015-i18n-tag",
   "engines": {

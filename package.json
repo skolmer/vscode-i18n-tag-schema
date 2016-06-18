@@ -4,11 +4,35 @@
   "description": "JSON Schema for i18n tagged template literals",
   "version": "0.4.2",
   "publisher": "skolmer",
-  "author": "Steffen Kolmer <steffen@kolmer.net> (http://github.com/skolmer)",
+  "author": {
+    "email": "steffen@kolmer.net",
+    "name": "Steffen Kolmer",
+    "url": "http://kolmer.net"
+  }
   "license": "MIT",
+  "homepage": "https://github.com/skolmer/es2015-i18n-tag",
   "engines": {
-    "vscode": "^0.10.7"
+    "vscode": "^1.2.0"
   },
+  "keywords": [
+    "javascript",
+    "JS",
+    "ES6",
+    "ES2015",
+    "Intl",
+    "l10n",
+    "i18n",
+    "translation",
+    "localization",
+    "internationalization",
+    "template literal",
+    "tagged template",
+    "template tag",
+    "es2015-i18n-tag",
+    "i18n-tag-schema",
+    "vscode-i18n-tag-schema",
+    "babel-plugin-i18n-tag-translate"
+  ],
   "icon": "images/vscode-18n-tag-schema-icon.jpg",
   "categories": [
     "Other"
@@ -20,6 +44,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/skolmer/vscode-18n-tag-schema.git"
+  },
+  "bugs": {
+    "url": "https://github.com/skolmer/vscode-i18n-tag-schema/issues",
+    "email": "steffen@kolmer.net"
   },
   "activationEvents": [
     "onCommand:i18nTag.updateSchema",

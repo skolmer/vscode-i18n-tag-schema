@@ -1,96 +1,96 @@
 {
-  "name": "vscode-i18n-tag-schema",
-  "displayName": "i18n literals schema generator",
-  "description": "JSON Schema for i18n tagged template literals",
-  "version": "0.4.2",
-  "publisher": "skolmer",
-  "author": {
-    "email": "steffen@kolmer.net",
-    "name": "Steffen Kolmer",
-    "url": "http://kolmer.net"
-  },
-  "license": "MIT",
-  "homepage": "https://github.com/skolmer/es2015-i18n-tag",
-  "engines": {
-    "vscode": "^1.2.0"
-  },
-  "keywords": [
-    "javascript",
-    "JS",
-    "ES6",
-    "ES2015",
-    "Intl",
-    "l10n",
-    "i18n",
-    "translation",
-    "localization",
-    "internationalization",
-    "template literal",
-    "tagged template",
-    "template tag",
-    "es2015-i18n-tag",
-    "i18n-tag-schema",
-    "vscode-i18n-tag-schema",
-    "babel-plugin-i18n-tag-translate"
-  ],
-  "icon": "images/vscode-18n-tag-schema-icon.jpg",
-  "categories": [
-    "Other"
-  ],
-  "galleryBanner": {
-    "color": "#f2e058",
-    "theme": "light"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/skolmer/vscode-18n-tag-schema.git"
-  },
-  "bugs": {
-    "url": "https://github.com/skolmer/vscode-i18n-tag-schema/issues",
-    "email": "steffen@kolmer.net"
-  },
-  "activationEvents": [
-    "onCommand:i18nTag.updateSchema",
-    "onCommand:i18nTag.showTranslationSchema",
-    "onCommand:i18nTag.showTranslationSchemaChanges",
-    "onCommand:i18nTag.configureSchemaGenerator"
-  ],
-  "main": "./out/src/extension",
-  "contributes": {
-    "commands": [
-      {
-        "command": "i18nTag.configureSchemaGenerator",
-        "category": "i18nTag",
-        "title": "Configure translation schema generator"
-      },
-      {
-        "command": "i18nTag.updateSchema",
-        "category": "i18nTag",
-        "title": "Update translation schema"
-      },
-      {
-        "command": "i18nTag.showTranslationSchema",
-        "category": "i18nTag",
-        "title": "Show translation schema"
-      },
-      {
-        "command": "i18nTag.showTranslationSchemaChanges",
-        "category": "i18nTag",
-        "title": "Show last local change to translation schema"
-      }
-    ]
-  },
-  "scripts": {
-    "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
-    "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install"
-  },
-  "dependencies": {
-    "i18n-tag-schema": "^0.6.10"
-  },
-  "devDependencies": {
-    "typescript": "^1.7.5",
-    "typings": "^1.2.0",
-    "vscode": "^0.11.0"
-  }
+    "name": "vscode-i18n-tag-schema",
+    "displayName": "i18n literals schema generator",
+    "description": "JSON Schema for i18n tagged template literals",
+    "version": "0.4.3",
+    "publisher": "skolmer",
+    "author": {
+        "email": "steffen@kolmer.net",
+        "name": "Steffen Kolmer",
+        "url": "http://kolmer.net"
+    },
+    "license": "MIT",
+    "homepage": "https://github.com/skolmer/es2015-i18n-tag",
+    "engines": {
+        "vscode": "^1.2.0"
+    },
+    "keywords": [
+        "javascript",
+        "translation",
+        "localization",
+        "template literal",
+        "es2015-i18n-tag",
+        "JS",
+        "ES6",
+        "ES2015",
+        "Intl",
+        "l10n",
+        "i18n",
+        "internationalization",
+        "tagged template",
+        "template tag",
+        "i18n-tag-schema",
+        "vscode-i18n-tag-schema",
+        "babel-plugin-i18n-tag-translate"
+    ],
+    "icon": "images/vscode-18n-tag-schema-icon.jpg",
+    "categories": [
+        "Other"
+    ],
+    "galleryBanner": {
+        "color": "#f2e058",
+        "theme": "light"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/skolmer/vscode-18n-tag-schema.git"
+    },
+    "bugs": {
+        "url": "https://github.com/skolmer/vscode-i18n-tag-schema/issues",
+        "email": "steffen@kolmer.net"
+    },
+    "activationEvents": [
+        "onCommand:i18nTag.updateSchema",
+        "onCommand:i18nTag.showTranslationSchema",
+        "onCommand:i18nTag.showTranslationSchemaChanges",
+        "onCommand:i18nTag.configureSchemaGenerator"
+    ],
+    "main": "./out/src/extension",
+    "contributes": {
+        "commands": [
+            {
+                "command": "i18nTag.configureSchemaGenerator",
+                "category": "i18nTag",
+                "title": "Configure translation schema generator"
+            },
+            {
+                "command": "i18nTag.updateSchema",
+                "category": "i18nTag",
+                "title": "Update translation schema"
+            },
+            {
+                "command": "i18nTag.showTranslationSchema",
+                "category": "i18nTag",
+                "title": "Show translation schema"
+            },
+            {
+                "command": "i18nTag.showTranslationSchemaChanges",
+                "category": "i18nTag",
+                "title": "Show last local change to translation schema"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+        "compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+        "postinstall": "node ./node_modules/vscode/bin/install"
+    },
+    "dependencies": {
+        "i18n-tag-schema": "^0.6.10"
+    },
+    "devDependencies": {
+        "typescript": "^1.7.5",
+        "typings": "^1.2.0",
+        "vscode": "^0.11.0"
+    }
 }

@@ -87,7 +87,7 @@
     "lint": "tslint 'src'"
   },
   "dependencies": {
-    "i18n-tag-schema": "^0.7.0"
+    "i18n-tag-schema": "^0.7.1"
   },
   "devDependencies": {
     "typescript": "^1.7.5",

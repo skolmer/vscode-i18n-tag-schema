@@ -1,4 +1,4 @@
-# i18n Template Literals Schema [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/skolmer.vscode-i18n-tag-schema.svg)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) ![Marketplace Downloads](https://vsmarketplacebadge.apphb.com/installs/skolmer.vscode-i18n-tag-schema.svg)
+# i18n Tagged Template Literals Schema [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version/skolmer.vscode-i18n-tag-schema.svg)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) ![Marketplace Downloads](https://vsmarketplacebadge.apphb.com/installs/skolmer.vscode-i18n-tag-schema.svg)
 [![es2015-i18n-tag](images/vscode-18n-tag-schema-icon-big.jpg)](https://github.com/skolmer/es2015-i18n-tag)
 
 This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) genarates a json schema based on [i18n tagged template literals](https://github.com/skolmer/es2015-i18n-tag) in your javascript project.

@@ -1,8 +1,8 @@
-"use strict";
+"use strict"
 
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
 import * as fs from "fs"
-import * as path from 'path';
+import * as path from 'path'
 import i18nTagSchema from 'i18n-tag-schema'
 
 const spinner = ['🌍 ', '🌎 ', '🌏 ']
@@ -67,7 +67,7 @@ export function activate(context: vscode.ExtensionContext) {
                             return
                         }
                         try {
-                            new RegExp(filterProperty);
+                            new RegExp(filterProperty)
                         } catch (e) {
                             reject('Invalid RegExp!')
                             return
@@ -93,9 +93,9 @@ export function activate(context: vscode.ExtensionContext) {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
                 updateSchema(context)
-                resolve();
+                resolve()
             }, reject)
-        });
+        })
     })
 
     var showTranslationSchema = vscode.commands.registerCommand('i18nTag.showTranslationSchema', (context) => {
@@ -105,10 +105,10 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.window.showTextDocument(file)
                 }, (reason) => {
                     vscode.window.showErrorMessage(reason)
-                });
-                resolve();
+                })
+                resolve()
             }, reject)
-        });
+        })
     })
 
     var showTranslationSchemaChanges = vscode.commands.registerCommand('i18nTag.showTranslationSchemaChanges', (context) => {
@@ -119,9 +119,9 @@ export function activate(context: vscode.ExtensionContext) {
                 } else {
                     vscode.window.showInformationMessage(`Schema has no local changes`)
                 }
-                resolve();
+                resolve()
             }, reject)
-        });
+        })
     })
 
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
@@ -135,7 +135,7 @@ export function activate(context: vscode.ExtensionContext) {
                             resolve(file.getText())
                         }, (reason) => {
                             reject(reason)
-                        });
+                        })
                     })
             }
         }
@@ -167,7 +167,7 @@ function readConfig() {
             return
         }
         grouped = config['grouped']
-        resolve();
+        resolve()
     })
 }
 
@@ -216,9 +216,7 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
             grouped = group
             vscode.window.showInformationMessage('Sucessfully configured translation schema generator').then(resolve, reject)
         })
-    });
-
-
+    })
 }
 
 function spin(start) {
@@ -248,7 +246,7 @@ function spin(start) {
         }
         setTimeout(() => {
             spin(showSpinner)
-        }, spinnerInterval);
+        }, spinnerInterval)
     }
 }
 
@@ -273,7 +271,7 @@ function updateSchema(context: vscode.ExtensionContext) {
                                 vscode.window.showTextDocument(file)
                             }, (reason) => {
                                 vscode.window.showErrorMessage(reason)
-                            });
+                            })
                         }
                     })
                 }
@@ -311,7 +309,7 @@ function updateSchema(context: vscode.ExtensionContext) {
     }, (reason) => {
         oldSchema = null
         update()
-    });
+    })
 }
 
 export function deactivate() {

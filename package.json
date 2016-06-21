@@ -86,7 +86,7 @@
         "postinstall": "node ./node_modules/vscode/bin/install"
     },
     "dependencies": {
-        "i18n-tag-schema": "^0.6.10"
+        "i18n-tag-schema": "^0.6.12"
     },
     "devDependencies": {
         "typescript": "^1.7.5",

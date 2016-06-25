@@ -3,7 +3,7 @@
 
 This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) genarates a json schema based on [i18n tagged template literals](https://github.com/skolmer/es2015-i18n-tag) in your javascript project.
 
-For more details please see: [Template Literal based i18n translation and localization](https://github.com/skolmer/es2015-i18n-tag)
+For more details please see: [Template Literal based i18n translation and localization](http://i18n-tag.kolmer.net/)
 
 [![i18n Tagged Template Literals Schema Extension](https://github.com/skolmer/vscode-i18n-tag-schema/raw/master/images/demo.gif)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema)
 

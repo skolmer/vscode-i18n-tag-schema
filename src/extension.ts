@@ -3,12 +3,12 @@
 import * as vscode from 'vscode'
 import * as fs from "fs"
 import * as path from 'path'
-import i18nTagSchema from 'i18n-tag-schema'
+import i18nTagSchema, { templatesFromFile } from 'i18n-tag-schema'
 
 const spinner = ['🌍 ', '🌎 ', '🌏 ']
 const spinnerInterval = 180
 const spinnerLength = spinner.length
-const spinnerMessage = 'Generating i18n translation schema'
+const spinnerMessage = 'Collecting i18n template literals'
 let config
 let filter
 let srcPath
@@ -20,6 +20,7 @@ let spinnerIndex = 0
 let showSpinner = false
 let outputChannel: vscode.OutputChannel
 let oldSchema: string
+let templatesJson: string
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
@@ -124,11 +125,63 @@ export function activate(context: vscode.ExtensionContext) {
         })
     })
 
+    var listTemplates = vscode.commands.registerCommand('i18nTag.listTemplates', (context) => {
+        return new Promise((resolve, reject) => {
+            readConfig().then(() => {
+                templatesJson = ''
+                const doc = vscode.window.activeTextEditor.document
+                if (doc && doc.fileName && (doc.languageId === 'javascript' || doc.languageId === 'javascriptreact')) {
+                    spin(true)
+                    templatesFromFile(srcPath, doc.fileName, grouped,
+                        (message, type) => {
+                            switch (type) {
+                                case 'error':
+                                    vscode.window.showErrorMessage(message).then(() => {
+                                        spin(false)
+                                        reject(message)
+                                    })
+                                    break
+                                case 'warn':
+                                    vscode.window.showWarningMessage(message).then(() => {
+                                        spin(false)
+                                        reject(message)
+                                    })
+                                    break
+                                default:
+                                    vscode.window.showInformationMessage(message)
+                                    break
+                            }
+                        },
+                        (tmpl) => {
+                            templatesJson = JSON.stringify(JSON.parse(tmpl), null, 2)
+                            vscode.workspace.openTextDocument(vscode.Uri.parse('i18n-schema:templates.json')).then((file) => {
+                                vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true).then(() => {
+                                    spin(false)
+                                    resolve()
+                                }, (reason) => {
+                                    spin(false)
+                                    reject(reason)
+                                })
+                            }, (reason) => {
+                                spin(false)
+                                reject(reason)
+                            })
+                        }
+                    )
+                } else {
+                    reject('This command can only be executed on an open javascript file')
+                }
+            }, reject)
+        })
+    })
+
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
         provideTextDocumentContent(uri) {
             switch (uri.path) {
                 case 'old.json':
                     return oldSchema
+                case 'templates.json':
+                    return templatesJson
                 default:
                     return new Promise((resolve, reject) => {
                         vscode.workspace.openTextDocument(schema).then((file) => {
@@ -141,7 +194,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     })
 
-    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration)
+    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration, listTemplates)
 }
 
 function readConfig() {

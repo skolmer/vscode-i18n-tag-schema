@@ -53,7 +53,8 @@
     "onCommand:i18nTag.updateSchema",
     "onCommand:i18nTag.showTranslationSchema",
     "onCommand:i18nTag.showTranslationSchemaChanges",
-    "onCommand:i18nTag.configureSchemaGenerator"
+    "onCommand:i18nTag.configureSchemaGenerator",
+    "onCommand:i18nTag.listTemplates"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -77,6 +78,11 @@
         "command": "i18nTag.showTranslationSchemaChanges",
         "category": "i18nTag",
         "title": "Show last local change to translation schema"
+      },
+      {
+        "command": "i18nTag.listTemplates",
+        "category": "i18nTag",
+        "title": "List all i18n template literals of current file"
       }
     ]
   },
@@ -87,7 +93,7 @@
     "lint": "tslint 'src'"
   },
   "dependencies": {
-    "i18n-tag-schema": "^1.1.0"
+    "i18n-tag-schema": "^1.2.0"
   },
   "devDependencies": {
     "typescript": "^1.7.5",

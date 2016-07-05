@@ -21,6 +21,7 @@ let showSpinner = false
 let outputChannel: vscode.OutputChannel
 let oldSchema: string
 let templatesJson: string
+let emitter = new vscode.EventEmitter<vscode.Uri>()
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
@@ -116,7 +117,11 @@ export function activate(context: vscode.ExtensionContext) {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
                 if (oldSchema) {
-                    vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`))
+                    const oldUri = vscode.Uri.parse('i18n-schema:old.json')
+                    const newUri = vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)
+                    emitter.fire(oldUri)
+                    emitter.fire(newUri)
+                    vscode.commands.executeCommand('vscode.diff', oldUri, newUri)
                 } else {
                     vscode.window.showInformationMessage(`Schema has no local changes`)
                 }
@@ -154,8 +159,10 @@ export function activate(context: vscode.ExtensionContext) {
                         },
                         (tmpl) => {
                             templatesJson = JSON.stringify(JSON.parse(tmpl), null, 2)
-                            vscode.workspace.openTextDocument(vscode.Uri.parse('i18n-schema:templates.json')).then((file) => {
-                                vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true).then(() => {
+                            const uri = vscode.Uri.parse('i18n-schema:templates.json')
+                            emitter.fire(uri);
+                            vscode.workspace.openTextDocument(uri).then((file) => {
+                                vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true).then((editor) => {
                                     spin(false)
                                     resolve()
                                 }, (reason) => {
@@ -174,14 +181,19 @@ export function activate(context: vscode.ExtensionContext) {
             }, reject)
         })
     })
-
+   
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
+        onDidChange: emitter.event,
         provideTextDocumentContent(uri) {
             switch (uri.path) {
                 case 'old.json':
-                    return oldSchema
+                    return new Promise((resolve, reject) => {
+                        resolve(oldSchema)
+                    })
                 case 'templates.json':
-                    return templatesJson
+                    return new Promise((resolve, reject) => {
+                        resolve(templatesJson)
+                    })
                 default:
                     return new Promise((resolve, reject) => {
                         vscode.workspace.openTextDocument(schema).then((file) => {
@@ -314,7 +326,11 @@ function updateSchema(context: vscode.ExtensionContext) {
                     var items = (oldSchema) ? ['Show Diff'] : []
                     vscode.window.showInformationMessage(message, ...items).then((value) => {
                         if (value === 'Show Diff') {
-                            vscode.commands.executeCommand('vscode.diff', vscode.Uri.parse('i18n-schema:old.json'), vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`))
+                            const oldUri = vscode.Uri.parse('i18n-schema:old.json')
+                            const newUri = vscode.Uri.parse(`i18n-schema:${path.basename(schema)}`)
+                            emitter.fire(oldUri)
+                            emitter.fire(newUri)
+                            vscode.commands.executeCommand('vscode.diff', oldUri, newUri)
                         }
                     })
                 } else {
@@ -356,13 +372,14 @@ function updateSchema(context: vscode.ExtensionContext) {
         }
     }
 
-    vscode.workspace.openTextDocument(schema).then((file) => {
-        oldSchema = file.getText()
+    fs.readFile(schema, 'utf-8', (err, contents) => {
+        if(err) {
+            oldSchema = null
+        } else {
+            oldSchema = contents
+        }
         update()
-    }, (reason) => {
-        oldSchema = null
-        update()
-    })
+    });
 }
 
 export function deactivate() {

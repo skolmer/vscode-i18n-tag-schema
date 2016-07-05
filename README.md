@@ -29,6 +29,7 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
 * Run command `i18nTag: Update translation schema` to generate a new translation schema.
 * Run command `i18nTag: Show translation schema` to show the current translation schema.
 * Run command `i18nTag: Show last local change to translation schema` to show the last local change of translation schema.
+* Run command `i18nTag: List all template literals of current file` to list all template literals of the current active JavaScript file.
 
 ## Reference schema in individual JSON file
 If you don't set the translation directory in configuration you can reference the schema directly in your json file.

@@ -82,7 +82,7 @@
       {
         "command": "i18nTag.listTemplates",
         "category": "i18nTag",
-        "title": "List all i18n template literals of current file"
+        "title": "List all template literals of current file"
       }
     ]
   },

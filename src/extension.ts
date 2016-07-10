@@ -57,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
                     }
                     vscode.window.showInputBox({
                         prompt: 'Only files that match this RegExp will be scanned!',
-                        placeHolder: 'e.g. \\.jsx?',
+                        placeHolder: 'e.g. \\.jsx?$',
                         value: '\\.jsx?',
                         validateInput: (val) => {
                             if (!val) return 'File extension RegExp setting is required!'

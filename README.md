@@ -13,7 +13,7 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
 ```json
     "i18nTag.src": "./src",
     "i18nTag.schema": "./translation.schema.json",
-    "i18nTag.filter": "\\.jsx?",
+    "i18nTag.filter": "\\.jsx?$",
     "i18nTag.grouped": false
     "json.schemas": [
         {

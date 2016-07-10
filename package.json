@@ -1,7 +1,7 @@
 {
   "name": "vscode-i18n-tag-schema",
-  "displayName": "i18n Tagged Template Literals Schema",
-  "description": "JSON schema for i18n tagged template literals",
+  "displayName": "i18n Tagged Template Literals",
+  "description": "JSON schema and tooling for i18n tagged template literals",
   "version": "1.3.0",
   "publisher": "skolmer",
   "author": {

@@ -1,9 +1,14 @@
 # i18n Tagged Template Literals [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/skolmer.vscode-i18n-tag-schema.svg)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) ![Marketplace Downloads](https://vsmarketplacebadge.apphb.com/installs/skolmer.vscode-i18n-tag-schema.svg)
 [![i18n Tagged Template Literals](https://github.com/skolmer/vscode-i18n-tag-schema/raw/master/images/vscode-18n-tag-schema-icon-big.jpg)](http://i18n-tag.kolmer.net/)
 
-This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) genarates a json schema based on [i18n tagged template literals](https://github.com/skolmer/es2015-i18n-tag) in your javascript project.
+## Overview
+
+This [Visual Studio Code Extension](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) genarates a json schema based on [i18n tagged template literals](https://github.com/skolmer/es2015-i18n-tag) in your JavaScript project.
+It also adds useful features like translation validation and translation key export.
 
 For more details please see: [Template Literal based i18n translation and localization](http://i18n-tag.kolmer.net/)
+
+This extension is based on [i18n-tag-schema](https://github.com/skolmer/i18n-tag-schema)
 
 [![i18n Tagged Template Literals Extension](https://github.com/skolmer/vscode-i18n-tag-schema/raw/master/images/demo.gif)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema)
 

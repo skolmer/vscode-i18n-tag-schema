@@ -3,7 +3,7 @@
 import * as vscode from 'vscode'
 import * as fs from "fs"
 import * as path from 'path'
-import i18nTagSchema, { templatesFromFile } from 'i18n-tag-schema'
+import i18nTagSchema, { exportTranslationKeys, validateSchema } from 'i18n-tag-schema'
 
 const spinner = ['🌍 ', '🌎 ', '🌏 ']
 const spinnerInterval = 180
@@ -130,58 +130,151 @@ export function activate(context: vscode.ExtensionContext) {
         })
     })
 
-    var listTemplates = vscode.commands.registerCommand('i18nTag.listTemplates', (context) => {
+    var exportKeys = vscode.commands.registerCommand('i18nTag.exportKeys', (context) => {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
-                templatesJson = ''
-                const doc = vscode.window.activeTextEditor.document
-                if (doc && doc.fileName && (doc.languageId === 'javascript' || doc.languageId === 'javascriptreact')) {
-                    spin(true)
-                    templatesFromFile(srcPath, doc.fileName, grouped,
-                        (message, type) => {
-                            switch (type) {
-                                case 'error':
-                                    vscode.window.showErrorMessage(message).then(() => {
-                                        spin(false)
-                                        reject(message)
-                                    })
-                                    break
-                                case 'warn':
-                                    vscode.window.showWarningMessage(message).then(() => {
-                                        spin(false)
-                                        reject(message)
-                                    })
-                                    break
-                                default:
-                                    vscode.window.showInformationMessage(message)
-                                    break
-                            }
-                        },
-                        (tmpl) => {
-                            templatesJson = JSON.stringify(JSON.parse(tmpl), null, 2)
-                            const uri = vscode.Uri.parse('i18n-schema:templates.json')
-                            emitter.fire(uri);
-                            vscode.workspace.openTextDocument(uri).then((file) => {
-                                vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true).then((editor) => {
+                spin(true)
+                exportTranslationKeys(srcPath, '.', grouped,
+                    (message, type) => {
+                        switch (type) {
+                            case 'error':
+                                vscode.window.showErrorMessage(message).then(() => {
                                     spin(false)
-                                    resolve()
-                                }, (reason) => {
-                                    spin(false)
-                                    reject(reason)
+                                    reject(message)
                                 })
+                                break
+                            case 'warn':
+                                vscode.window.showWarningMessage(message).then(() => {
+                                    spin(false)
+                                    reject(message)
+                                })
+                                break
+                            default:
+                                outputChannel.appendLine(message)
+                                outputChannel.show(true)
+                                break
+                        }
+                    },
+                    (tmpl) => {
+                        templatesJson = JSON.stringify(JSON.parse(tmpl), null, 2)
+                        const uri = vscode.Uri.parse('i18n-schema:templates.json')
+                        emitter.fire(uri);
+                        vscode.workspace.openTextDocument(uri).then((file) => {
+                            vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true).then((editor) => {
+                                spin(false)
+                                resolve()
                             }, (reason) => {
                                 spin(false)
                                 reject(reason)
                             })
-                        }
-                    )
-                } else {
-                    reject('This command can only be executed on an open javascript file')
-                }
+                        }, (reason) => {
+                            spin(false)
+                            reject(reason)
+                        })
+                    }
+                )
             }, reject)
         })
     })
-   
+
+    var listTemplates = vscode.commands.registerCommand('i18nTag.listTemplates', (resourceUri) => {
+        return new Promise((resolve, reject) => {
+            readConfig().then(() => {
+                templatesJson = ''
+                const doc = vscode.window.activeTextEditor.document
+                let docUri = resourceUri && resourceUri.fsPath
+                if(!docUri) {
+                    if (doc && doc.fileName && (doc.languageId === 'javascript' || doc.languageId === 'javascriptreact')) {
+                        docUri = doc.fileName                    
+                    } else {
+                        reject('This command can only be executed on an open javascript file')
+                        return
+                    }
+                }
+
+                spin(true)
+                exportTranslationKeys(srcPath, docUri, grouped,
+                    (message, type) => {
+                        switch (type) {
+                            case 'error':
+                                vscode.window.showErrorMessage(message).then(() => {
+                                    spin(false)
+                                    reject(message)
+                                })
+                                break
+                            case 'warn':
+                                vscode.window.showWarningMessage(message).then(() => {
+                                    spin(false)
+                                    reject(message)
+                                })
+                                break
+                            default:
+                                outputChannel.appendLine(message)
+                                outputChannel.show(true)
+                                break
+                        }
+                    },
+                    (tmpl) => {
+                        templatesJson = JSON.stringify(JSON.parse(tmpl), null, 2)
+                        const uri = vscode.Uri.parse('i18n-schema:templates.json')
+                        emitter.fire(uri);
+                        vscode.workspace.openTextDocument(uri).then((file) => {
+                            vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true).then((editor) => {
+                                spin(false)
+                                resolve()
+                            }, (reason) => {
+                                spin(false)
+                                reject(reason)
+                            })
+                        }, (reason) => {
+                            spin(false)
+                            reject(reason)
+                        })
+                    }
+                )
+            }, reject)
+        })
+    })
+
+    var validateTranslation = vscode.commands.registerCommand('i18nTag.validateTranslation', (resourceUri) => {
+        return new Promise((resolve, reject) => {
+            readConfig().then(() => {
+                templatesJson = ''
+                const doc = vscode.window.activeTextEditor.document
+                let docUri = resourceUri && resourceUri.fsPath
+                if(!docUri) {
+                    if (doc && doc.fileName && (doc.languageId === 'json')) {
+                        docUri = doc.fileName                    
+                    } else {
+                        reject('This command can only be executed on an open translation file')
+                        return
+                    }
+                }
+                outputChannel.appendLine(docUri)
+                validateSchema(docUri, schema,
+                    (message, type) => {
+                        switch (type) {
+                            case 'error':
+                                vscode.window.showErrorMessage(message).then(() => {
+                                    reject(message)
+                                })
+                                break
+                            case 'success':
+                                vscode.window.showInformationMessage(message).then(() => {
+                                    resolve()
+                                })
+                                break
+                            default:
+                                outputChannel.appendLine(message)
+                                outputChannel.show(true)
+                                break
+                        }
+                    }
+                )
+            }, reject)
+        })
+    })
+
     let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
         onDidChange: emitter.event,
         provideTextDocumentContent(uri) {
@@ -206,7 +299,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     })
 
-    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration, listTemplates)
+    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration, listTemplates, exportKeys, validateTranslation)
 }
 
 function readConfig() {
@@ -373,7 +466,7 @@ function updateSchema(context: vscode.ExtensionContext) {
     }
 
     fs.readFile(schema, 'utf-8', (err, contents) => {
-        if(err) {
+        if (err) {
             oldSchema = null
         } else {
             oldSchema = contents

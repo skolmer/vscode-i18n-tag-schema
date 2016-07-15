@@ -133,6 +133,8 @@ export function activate(context: vscode.ExtensionContext) {
     var exportKeys = vscode.commands.registerCommand('i18nTag.exportKeys', (context) => {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
+                outputChannel.appendLine(`exporting keys from ${srcPath}...`)
+                outputChannel.show(true)
                 spin(true)
                 exportTranslationKeys(srcPath, '.', grouped,
                     (message, type) => {
@@ -140,13 +142,14 @@ export function activate(context: vscode.ExtensionContext) {
                             case 'error':
                                 vscode.window.showErrorMessage(message).then(() => {
                                     spin(false)
+                                    outputChannel.appendLine(message)
                                     reject(message)
                                 })
                                 break
                             case 'warn':
                                 vscode.window.showWarningMessage(message).then(() => {
                                     spin(false)
-                                    reject(message)
+                                    outputChannel.appendLine(message)
                                 })
                                 break
                             default:
@@ -191,7 +194,7 @@ export function activate(context: vscode.ExtensionContext) {
                         return
                     }
                 }
-
+                outputChannel.appendLine(`listing template literals from ${docUri}...`)
                 spin(true)
                 exportTranslationKeys(srcPath, docUri, grouped,
                     (message, type) => {
@@ -199,13 +202,14 @@ export function activate(context: vscode.ExtensionContext) {
                             case 'error':
                                 vscode.window.showErrorMessage(message).then(() => {
                                     spin(false)
+                                    outputChannel.appendLine(message)
                                     reject(message)
                                 })
                                 break
                             case 'warn':
                                 vscode.window.showWarningMessage(message).then(() => {
                                     spin(false)
-                                    reject(message)
+                                    outputChannel.appendLine(message)
                                 })
                                 break
                             default:
@@ -250,17 +254,19 @@ export function activate(context: vscode.ExtensionContext) {
                         return
                     }
                 }
-                outputChannel.appendLine(docUri)
+                outputChannel.appendLine(`validating translation ${docUri}...`)
                 validateSchema(docUri, schema,
                     (message, type) => {
                         switch (type) {
                             case 'error':
                                 vscode.window.showErrorMessage(message).then(() => {
+                                    outputChannel.appendLine(message)
                                     reject(message)
                                 })
                                 break
                             case 'success':
                                 vscode.window.showInformationMessage(message).then(() => {
+                                    outputChannel.appendLine(message)
                                     resolve()
                                 })
                                 break

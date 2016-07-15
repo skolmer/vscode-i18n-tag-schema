@@ -65,12 +65,12 @@
         {
           "when": "resourceLangId == json",
           "command": "i18nTag.validateTranslation",
-          "group": "i18n"
+          "group": "navigation"
         },
         {
           "when": "resourceLangId == javascript",
           "command": "i18nTag.listTemplates",
-          "group": "i18n"
+          "group": "navigation"
         }
       ],
       "explorer/context": [
@@ -110,7 +110,11 @@
       {
         "command": "i18nTag.listTemplates",
         "category": "i18nTag",
-        "title": "List template literals"
+        "title": "List template literals",
+        "icon": {
+          "light": "./media/list_icon.svg",
+          "dark": "./media/list_icon_inverted.svg"
+        }
       },
       {
         "command": "i18nTag.exportKeys",

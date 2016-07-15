@@ -47,6 +47,9 @@ If you don't set the translation directory in configuration you can reference th
 }
 ```
 
+[![i18n Tagged Template Literals Extension](https://github.com/skolmer/vscode-i18n-tag-schema/raw/master/images/demo2.gif)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema)
+
+
 ## Tools
 
 

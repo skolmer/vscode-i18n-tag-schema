@@ -143,7 +143,7 @@ export function activate(context: vscode.ExtensionContext) {
                                 vscode.window.showErrorMessage(message).then(() => {
                                     spin(false)
                                     outputChannel.appendLine(message)
-                                    reject(message)
+                                    resolve()
                                 })
                                 break
                             case 'warn':
@@ -203,7 +203,7 @@ export function activate(context: vscode.ExtensionContext) {
                                 vscode.window.showErrorMessage(message).then(() => {
                                     spin(false)
                                     outputChannel.appendLine(message)
-                                    reject(message)
+                                    resolve()
                                 })
                                 break
                             case 'warn':
@@ -261,7 +261,7 @@ export function activate(context: vscode.ExtensionContext) {
                             case 'error':
                                 vscode.window.showErrorMessage(message).then(() => {
                                     outputChannel.appendLine(message)
-                                    reject(message)
+                                    resolve()
                                 })
                                 break
                             case 'success':

@@ -1,4 +1,4 @@
-# i18n Tagged Template Literals [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/skolmer.vscode-i18n-tag-schema.svg)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) ![Marketplace Downloads](https://vsmarketplacebadge.apphb.com/installs/skolmer.vscode-i18n-tag-schema.svg)
+# i18n Tagged Template Literals [![Marketplace Version](https://vsmarketplacebadge.apphb.com/version-short/skolmer.vscode-i18n-tag-schema.svg)](https://marketplace.visualstudio.com/items?itemName=skolmer.vscode-i18n-tag-schema) ![Marketplace Downloads](https://vsmarketplacebadge.apphb.com/installs/skolmer.vscode-i18n-tag-schema.svg) ![Rating](https://vsmarketplacebadge.apphb.com/rating-short/skolmer.vscode-i18n-tag-schema.svg)
 [![i18n Tagged Template Literals](https://github.com/skolmer/vscode-i18n-tag-schema/raw/master/images/vscode-18n-tag-schema-icon-big.jpg)](http://i18n-tag.kolmer.net/)
 
 ## Overview

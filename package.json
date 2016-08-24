@@ -139,7 +139,7 @@
     "lint": "tslint 'src'"
   },
   "dependencies": {
-    "i18n-tag-schema": "^1.4.0"
+    "i18n-tag-schema": "^1.5.0"
   },
   "devDependencies": {
     "typescript": "^1.7.5",

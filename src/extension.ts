@@ -30,16 +30,16 @@ const log = (message) => {
 }
 
 const logger = {
-    info: (message) => log(` ${chalk.black.bgWhite.bold('INFO')}  ${message}`),
-    warn: (message) => log(` ${chalk.black.bgYellow.bold('WARN')}  ${message}`),
-    error: (message) => log(` ${chalk.white.bgRed.bold('ERROR')}  ${message}`)
+    info: (message) => log(`${chalk.black.bgWhite.bold(' INFO ')} ${message}`),
+    warn: (message) => log(`${chalk.black.bgYellow.bold(' WARN ')} ${message}`),
+    error: (message) => log(`${chalk.white.bgRed.bold(' ERROR ')} ${message}`)
 }
 
 export function activate(context: vscode.ExtensionContext) {
     outputChannel = vscode.window.createOutputChannel('i18nTag')
     context.subscriptions.push(outputChannel)
 
-    var configureSchemaGenerator = vscode.commands.registerCommand('i18nTag.configureSchemaGenerator', (context) => {
+    const configureSchemaGenerator = vscode.commands.registerCommand('i18nTag.configureSchemaGenerator', (context) => {
         return new Promise((resolve, reject) => {
             vscode.window.showInputBox({
                 prompt: 'What is the source directory of your JS application?',
@@ -103,7 +103,7 @@ export function activate(context: vscode.ExtensionContext) {
         })
     })
 
-    var updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
+    const updateSchemaCommand = vscode.commands.registerCommand('i18nTag.updateSchema', (context) => {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
                 updateSchema(context)
@@ -112,7 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
         })
     })
 
-    var showTranslationSchema = vscode.commands.registerCommand('i18nTag.showTranslationSchema', (context) => {
+    const showTranslationSchema = vscode.commands.registerCommand('i18nTag.showTranslationSchema', (context) => {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
                 vscode.workspace.openTextDocument(schema).then((file) => {
@@ -125,7 +125,7 @@ export function activate(context: vscode.ExtensionContext) {
         })
     })
 
-    var showTranslationSchemaChanges = vscode.commands.registerCommand('i18nTag.showTranslationSchemaChanges', (context) => {
+    const showTranslationSchemaChanges = vscode.commands.registerCommand('i18nTag.showTranslationSchemaChanges', (context) => {
         return new Promise((resolve, reject) => {
             readConfig().then(() => {
                 if (oldSchema) {
@@ -142,7 +142,7 @@ export function activate(context: vscode.ExtensionContext) {
         })
     })
 
-    var exportKeys = vscode.commands.registerCommand('i18nTag.exportKeys', async (context) => {
+    const exportKeys = vscode.commands.registerCommand('i18nTag.exportKeys', async (context) => {
         await readConfig()
         outputChannel.appendLine(`exporting keys from ${srcPath}...`)
         outputChannel.show(true)
@@ -163,7 +163,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     })
 
-    var listTemplates = vscode.commands.registerCommand('i18nTag.listTemplates', async (resourceUri) => {
+    const listOpenTemplates = vscode.commands.registerCommand('i18nTag.listOpenTemplates', async () => {
         await readConfig()
         templatesJson = ''
         const doc = vscode.window.activeTextEditor.document
@@ -187,39 +187,35 @@ export function activate(context: vscode.ExtensionContext) {
                 outputChannel.show(true)
             }
         } else {
-            let docUri = resourceUri && resourceUri.fsPath
-            if(!docUri) throw new Error('This command can only be executed on an open javascript file')
-            outputChannel.appendLine(`listing template literals from ${docUri}...`)
-            outputChannel.show(true)
-            spin(true)
-            try {
-                const tmpl = await exportTranslationKeys({ rootPath: srcPath, filePath: docUri, filter: filter, logger: logger, preprocessor: preprocessor, babylonConfig: babylonConfig })
-                templatesJson = JSON.stringify(tmpl, null, 2)
-                const uri = vscode.Uri.parse('i18n-schema:templates.json')
-                emitter.fire(uri)
-                const file = await vscode.workspace.openTextDocument(uri)
-                await vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true)
-                spin(false)
-            } catch(err) {
-                spin(false)
-                await vscode.window.showErrorMessage(err.message)
-                outputChannel.appendLine(err)
-                outputChannel.show(true)
-            }
+            throw new Error('This command can only be executed on an open javascript file')
         }
     })
 
-    var validateTranslation = vscode.commands.registerCommand('i18nTag.validateTranslation', async (resourceUri) => {
+    const listTemplates = vscode.commands.registerCommand('i18nTag.listTemplates', async (resourceUri) => {
         await readConfig()
         templatesJson = ''
-        const doc = vscode.window.activeTextEditor.document
-        let docUri
-        if(doc && doc.fileName && doc.languageId === 'json') {
-            docUri = doc.fileName
-        } else {
-            docUri = resourceUri && resourceUri.fsPath
+        let docUri = resourceUri && resourceUri.fsPath
+        if(!docUri) throw new Error('This command can only be executed on an open javascript file')
+        outputChannel.appendLine(`listing template literals from ${docUri}...`)
+        outputChannel.show(true)
+        spin(true)
+        try {
+            const tmpl = await exportTranslationKeys({ rootPath: srcPath, filePath: docUri, filter: filter, logger: logger, preprocessor: preprocessor, babylonConfig: babylonConfig })
+            templatesJson = JSON.stringify(tmpl, null, 2)
+            const uri = vscode.Uri.parse('i18n-schema:templates.json')
+            emitter.fire(uri)
+            const file = await vscode.workspace.openTextDocument(uri)
+            await vscode.window.showTextDocument(file, vscode.ViewColumn.Two, true)
+            spin(false)
+        } catch(err) {
+            spin(false)
+            await vscode.window.showErrorMessage(err.message)
+            outputChannel.appendLine(err)
+            outputChannel.show(true)
         }
-        if(!docUri) throw new Error('This command can only be executed on an open translation file')
+    })
+
+    const _validateTranslation = async (docUri) => {
         outputChannel.appendLine(`validating translation ${docUri}...`)
         outputChannel.show(true)
         spin(true)
@@ -235,9 +231,32 @@ export function activate(context: vscode.ExtensionContext) {
             await vscode.window.showErrorMessage(err.message)
             outputChannel.show(true)
         }
+    }
+
+    const validateTranslation = vscode.commands.registerCommand('i18nTag.validateTranslation', async (resourceUri) => {
+        await readConfig()
+        templatesJson = ''
+        let docUri
+        if(resourceUri && resourceUri.fsPath) {
+            docUri = resourceUri.fsPath
+        }
+        if(!docUri) throw new Error('This command can only be executed on an open translation file')
+        await _validateTranslation(docUri)
     })
 
-    let registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
+    const validateOpenTranslation = vscode.commands.registerCommand('i18nTag.validateOpenTranslation', async () => {
+        await readConfig()
+        templatesJson = ''
+        const doc = vscode.window.activeTextEditor.document
+        let docUri
+        if(doc && doc.fileName && doc.languageId === 'json') {
+            docUri = doc.fileName
+        }
+        if(!docUri) throw new Error('This command can only be executed on an open translation file')
+        await _validateTranslation(docUri)
+    })
+
+    const registration = vscode.workspace.registerTextDocumentContentProvider('i18n-schema', {
         onDidChange: emitter.event,
         provideTextDocumentContent(uri) {
             switch (uri.path) {
@@ -261,7 +280,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     })
 
-    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration, listTemplates, exportKeys, validateTranslation)
+    context.subscriptions.push(configureSchemaGenerator, updateSchemaCommand, showTranslationSchema, showTranslationSchemaChanges, registration, listTemplates, exportKeys, validateTranslation, listOpenTemplates, validateOpenTranslation)
 }
 
 async function readConfig() {

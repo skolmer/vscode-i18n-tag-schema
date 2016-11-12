@@ -56,7 +56,9 @@
     "onCommand:i18nTag.configureSchemaGenerator",
     "onCommand:i18nTag.listTemplates",
     "onCommand:i18nTag.exportKeys",
-    "onCommand:i18nTag.validateTranslation"
+    "onCommand:i18nTag.validateTranslation",
+    "onCommand:i18nTag.listOpenTemplates",
+    "onCommand:i18nTag.validateOpenTranslation"
   ],
   "main": "./out/src/extension",
   "contributes": {
@@ -64,12 +66,12 @@
       "editor/title": [
         {
           "when": "resourceLangId == json",
-          "command": "i18nTag.validateTranslation",
+          "command": "i18nTag.validateOpenTranslation",
           "group": "navigation"
         },
         {
           "when": "resourceLangId == javascript",
-          "command": "i18nTag.listTemplates",
+          "command": "i18nTag.listOpenTemplates",
           "group": "navigation"
         }
       ],
@@ -108,13 +110,18 @@
         "title": "Show last local change to translation schema"
       },
       {
-        "command": "i18nTag.listTemplates",
+        "command": "i18nTag.listOpenTemplates",
         "category": "i18nTag",
-        "title": "List template literals",
+        "title": "List template literals of active file",
         "icon": {
           "light": "./media/list_icon.svg",
           "dark": "./media/list_icon_inverted.svg"
         }
+      },
+      {
+        "command": "i18nTag.listTemplates",
+        "category": "i18nTag",
+        "title": "List template literals of active file"
       },
       {
         "command": "i18nTag.exportKeys",
@@ -122,13 +129,18 @@
         "title": "Export translation keys from source directory"
       },
       {
-        "command": "i18nTag.validateTranslation",
+        "command": "i18nTag.validateOpenTranslation",
         "category": "i18nTag",
-        "title": "Validate translation file",
+        "title": "Validate acrive translation file",
         "icon": {
           "light": "./media/validate_icon.svg",
           "dark": "./media/validate_icon_inverted.svg"
         }
+      },
+      {
+        "command": "i18nTag.validateTranslation",
+        "category": "i18nTag",
+        "title": "Validate acrive translation file"
       }
     ]
   },
@@ -139,7 +151,7 @@
   },
   "dependencies": {
     "chalk": "^1.1.3",
-    "i18n-tag-schema": "^2.1.0"
+    "i18n-tag-schema": "^2.1.1"
   },
   "devDependencies": {
     "typescript": "^2.0.9",

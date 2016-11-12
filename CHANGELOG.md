@@ -1,3 +1,8 @@
+### 2.1.1
+
+* Optimized logging output
+* Fixed an issue where context menu commands are not executed on the selected file
+
 ### 2.1.0
 
 * Added support for custom preprocessors

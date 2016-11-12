@@ -12,7 +12,9 @@ const spinnerMessage = 'Collecting i18n template literals'
 let config
 let filter
 let srcPath
+let preprocessor
 let schema
+let babylonConfig
 let info = ''
 let spinnerInstance: vscode.StatusBarItem
 let spinnerIndex = 0
@@ -88,7 +90,12 @@ export function activate(context: vscode.ExtensionContext) {
                             prompt: 'Optional: Where are your translation files located?',
                             placeHolder: 'e.g. /translations/**/*.json'
                         }).then((translationsProperty) => {
-                            updateSettings(srcProperty, schemaProperty, filterProperty, resolve, reject, translationsProperty)
+                            vscode.window.showInputBox({
+                                prompt: 'Optional: Do you want to use a proprocessor?',
+                                placeHolder: 'e.g. ./preprocessors/typescript'
+                            }).then((preprocessor) => {
+                                updateSettings(srcProperty, schemaProperty, filterProperty, resolve, reject, translationsProperty, preprocessor)
+                            }, reject)
                         }, reject)
                     }, reject)
                 }, reject)
@@ -141,7 +148,7 @@ export function activate(context: vscode.ExtensionContext) {
         outputChannel.show(true)
         spin(true)
         try {
-            const tmpl = await exportTranslationKeys({ rootPath: srcPath, filePath: '.', logger: logger })
+            const tmpl = await exportTranslationKeys({ rootPath: srcPath, filePath: '.', filter: filter, logger: logger, preprocessor: preprocessor, babylonConfig: babylonConfig })
             templatesJson = JSON.stringify(tmpl, null, 2)
             const uri = vscode.Uri.parse('i18n-schema:templates.json')
             emitter.fire(uri)
@@ -166,7 +173,7 @@ export function activate(context: vscode.ExtensionContext) {
             spin(true)
             try {
                 const content = doc.getText()
-                const tmpl = await readTemplatesFromFileContent({rootPath: srcPath, filePath: doc.fileName, content: content })
+                const tmpl = await readTemplatesFromFileContent({rootPath: srcPath, filePath: doc.fileName, content: content, preprocessor: preprocessor, babylonConfig: babylonConfig })
                 templatesJson = JSON.stringify(tmpl.templates, null, 2)
                 const uri = vscode.Uri.parse('i18n-schema:templates.json')
                 emitter.fire(uri)
@@ -186,7 +193,7 @@ export function activate(context: vscode.ExtensionContext) {
             outputChannel.show(true)
             spin(true)
             try {
-                const tmpl = await exportTranslationKeys({ rootPath: srcPath, filePath: docUri, logger: logger })
+                const tmpl = await exportTranslationKeys({ rootPath: srcPath, filePath: docUri, filter: filter, logger: logger, preprocessor: preprocessor, babylonConfig: babylonConfig })
                 templatesJson = JSON.stringify(tmpl, null, 2)
                 const uri = vscode.Uri.parse('i18n-schema:templates.json')
                 emitter.fire(uri)
@@ -260,6 +267,8 @@ export function activate(context: vscode.ExtensionContext) {
 async function readConfig() {
     config = vscode.workspace.getConfiguration('i18nTag')
     filter = config['filter']
+    preprocessor = config['preprocessor']
+    babylonConfig = config['babylonConfig']
     if (!filter) {
         return await vscode.commands.executeCommand('i18nTag.configureSchemaGenerator')
     }
@@ -277,7 +286,7 @@ async function readConfig() {
     }
 }
 
-function updateSettings(src: string, schm: string, filt: string, resolve: () => void, reject: (reason: string) => void, translations?: string) {
+function updateSettings(src: string, schm: string, filt: string, resolve: () => void, reject: (reason: string) => void, translations?: string, preproc?: string) {
     if (!src || !schm || !filt) {
         reject('Missing required settings')
         return
@@ -290,6 +299,7 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
         settings['i18nTag.src'] = src
         settings['i18nTag.schema'] = schm
         settings['i18nTag.filter'] = filt
+        if(preproc) settings['i18nTag.preprocessor'] = preproc
         let schemas = settings['json.schemas'] || []
         schemas = schemas.filter((val) => (!val.url || val.url != schm))
         if (translations) {
@@ -316,6 +326,7 @@ function updateSettings(src: string, schm: string, filt: string, resolve: () => 
                 return
             }
             filter = filt
+            preprocessor = preproc
             srcPath = path.resolve(vscode.workspace.rootPath, src)
             schema = path.resolve(vscode.workspace.rootPath, schm)
             vscode.window.showInformationMessage('Sucessfully configured translation schema generator').then(resolve, reject)
@@ -358,7 +369,7 @@ function updateSchema(context: vscode.ExtensionContext) {
     spin(true)
     const update = async () => {
         try {
-            await generateTranslationSchema({ rootPath: srcPath, filter: filter, schemaPath: schema, logger: logger })
+            await generateTranslationSchema({ rootPath: srcPath, filter: filter, schemaPath: schema, logger: logger, preprocessor: preprocessor, babylonConfig: babylonConfig })
             spin(false)
             var items = (oldSchema) ? ['Show Diff'] : ['Show File']
             const value = await vscode.window.showInformationMessage('i18n json schema has been updated', ...items)

@@ -19,6 +19,26 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
     "i18nTag.src": "./src",
     "i18nTag.schema": "./translation.schema.json",
     "i18nTag.filter": "\\.jsx?$",
+    "i18nTag.preprocessor": "./preprocessors/typescript", /* add this if you want typescript support or add a custom preprocessor */
+    "i18nTag.babylonConfig": { /* add this if you want to override the default babylon parser options */
+        "sourceType": "module",
+        "plugins": [
+            "jsx",
+            "asyncFunctions",
+            "flow",
+            "classConstructorCall",
+            "doExpressions",
+            "trailingFunctionCommas",
+            "objectRestSpread",
+            "decorators",
+            "classProperties",
+            "exportExtensions",
+            "exponentiationOperator",
+            "asyncGenerators",
+            "functionBind",
+            "functionSent"
+        ]
+    },
     "json.schemas": [
         {
             "fileMatch": [
@@ -28,7 +48,7 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
         }
     ]
 ```
-   
+
 ## Use
 * Run command `i18nTag: Update translation schema` to generate a new translation schema.
 * Run command `i18nTag: Show translation schema` to show the current translation schema.

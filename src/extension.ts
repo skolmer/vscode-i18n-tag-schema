@@ -29,7 +29,7 @@ const log = (message) => {
 
 const logger = {
     info: (message) => log(` ${chalk.black.bgWhite.bold('INFO')}  ${message}`),
-    warn: (message) => log(` ${chalk.black.bgYellow.bold('INFO')}  ${message}`),
+    warn: (message) => log(` ${chalk.black.bgYellow.bold('WARN')}  ${message}`),
     error: (message) => log(` ${chalk.white.bgRed.bold('ERROR')}  ${message}`)
 }
 

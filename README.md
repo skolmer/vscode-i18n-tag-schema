@@ -20,6 +20,8 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
     "i18nTag.schema": "./translation.schema.json",
     "i18nTag.filter": "\\.jsx?$",
     "i18nTag.preprocessor": "./preprocessors/typescript", /* add this if you want typescript support or add a custom preprocessor */
+    "i18nTag.postprocessor": "./postprocessors/po", /* add this if you want to export a PO file format or add a custom postprocessor */
+    "i18nTag.indention": 2, /* The number of spaces to be used for schema indention. if not set, tabs will be used. */
     "i18nTag.babylonConfig": { /* add this if you want to override the default babylon parser options */
         "sourceType": "module",
         "plugins": [
@@ -53,7 +55,7 @@ For quick configuration use `i18nTag: Configure translation schema generator` co
 * Run command `i18nTag: Update translation schema` to generate a new translation schema.
 * Run command `i18nTag: Show translation schema` to show the current translation schema.
 * Run command `i18nTag: Show last local change to translation schema` to show the last local change of translation schema.
-* Run command `i18nTag: List template literals` to list all template literals of a JavaScript file. (available via Context Menu)
+* Run command `i18nTag: List template literals of active file` to list all template literals of a JavaScript file. (available via Context Menu)
 * Run command `i18nTag: Export translation keys from source directory` to export all translation keys as JSON.
 * Run command `i18nTag: Validate translation file` to validate a translation file. (available via Context Menu)
 

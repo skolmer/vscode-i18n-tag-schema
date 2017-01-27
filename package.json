@@ -131,7 +131,7 @@
       {
         "command": "i18nTag.validateOpenTranslation",
         "category": "i18nTag",
-        "title": "Validate acrive translation file",
+        "title": "Validate active translation file",
         "icon": {
           "light": "./media/validate_icon.svg",
           "dark": "./media/validate_icon_inverted.svg"
@@ -140,7 +140,7 @@
       {
         "command": "i18nTag.validateTranslation",
         "category": "i18nTag",
-        "title": "Validate acrive translation file"
+        "title": "Validate active translation file"
       }
     ]
   },
@@ -151,7 +151,7 @@
   },
   "dependencies": {
     "chalk": "^1.1.3",
-    "i18n-tag-schema": "^2.1.1"
+    "i18n-tag-schema": "^2.4.0"
   },
   "devDependencies": {
     "typescript": "^2.0.9",

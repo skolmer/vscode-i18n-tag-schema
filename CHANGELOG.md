@@ -1,3 +1,7 @@
+### 2.2.2
+
+* Updated to i18n-tag-schema v2.4.2
+
 ### 2.2.1
 
 * Updated to i18n-tag-schema v2.4.1

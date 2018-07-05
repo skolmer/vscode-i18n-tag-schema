@@ -1,3 +1,7 @@
+### 2.2.4
+
+* Updated to i18n-tag-schema v2.5.0 (support for i18n.translate())
+
 ### 2.2.3
 
 * Updated to i18n-tag-schema v2.4.4
